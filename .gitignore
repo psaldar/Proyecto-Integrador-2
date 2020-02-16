@@ -1,0 +1,21 @@
+# ignorar:
+
+# Ipython notebook checkpoints
+.ipynb_checkpoints/*
+
+# Byte-compiled / optimized / DLL files:
+/__pycache__/*
+*.py[cod]
+
+# logs
+logs/*
+*.log
+
+# Archivos html
+*.html
+
+# Archivos pesados
+data/darksky_key.json
+
+# Bases de datos sqlite
+data/*.sqlite3
