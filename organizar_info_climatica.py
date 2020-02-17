@@ -23,6 +23,13 @@ darksky_api = darksky(api_key)
 file_name = 'data/clima.sqlite3'
 conn = sqlite3.connect(file_name)
 
+### Esto se realiza en caso que ya exista informacion consultada en la BD
+#query = """SELECT * FROM CLIMA """
+#info_db = pd.read_sql_query(query,conn)
+#
+#barrios = info_db[['TW','BARRIO']].groupby('BARRIO').max().reset_index()
+#barrios = barrios[barrios['TW']==barrios['TW'].max()].reset_index(drop = True)
+
 ### Define el rango de fechas en el cual se busca la informacion
 d_ini = dt.datetime(2017,1,1)
 d_fin = dt.datetime(2017,12,31)
@@ -32,6 +39,10 @@ d_fin = dt.datetime(2017,12,31)
 ### de los barrios en donde se hara la busqueda
 dates = pd.date_range(start=d_ini, end=d_fin, freq='1D')
 centroides = pd.read_csv('data/centroides_barrios.csv', sep = ',')
+
+### elimina los barrios que ya fueron consultados
+#centroides = centroides[~centroides['BARRIO'].isin(barrios['BARRIO'])].reset_index(drop = True)
+#print(len(centroides))
 
 clima_cols = ['TW','BARRIO','summary','icon','precipIntensity','precipProbability',
               'temperature','apparentTemperature','dewPoint','humidity','windSpeed',
