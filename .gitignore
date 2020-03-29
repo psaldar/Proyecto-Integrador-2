@@ -18,4 +18,14 @@ logs/*
 data/darksky_key.json
 
 # Bases de datos sqlite
-data/*.sqlite3
+*.sqlite3
+
+# Modelos
+*.sav
+
+# Archivos irrelevantes
+*.json
+
+# Archivos pesados csv
+data/info_2019.csv
+data/Accidentalidad_georreferenciada_*.csv
