@@ -64,7 +64,8 @@ def main(d_ini, d_fin):
     version = 'ver002'
     now_date = dt.datetime.now()
     descripcion = """ Entrena modelo para realizar la prediccion de accidentes
-                       en los barrios del Poblado"""
+                       en los barrios del Poblado. Considera en el diccionario
+                       de modelos, solo los basados en arboles"""
                        
     mod = Modelo(now_date, version, base_path, descripcion)
 
@@ -86,52 +87,52 @@ def main(d_ini, d_fin):
     layers_nn = list(set(layers_nn))
     
     models = {
-                  'logistic':{
-                              'mod':LogisticRegression(random_state = 42),
-                              'par':{
-                                  'penalty': ('l1','l2'),
-                                  'solver': ('saga','lbfgs')
+                  # 'logistic':{
+                  #             'mod':LogisticRegression(random_state = 42),
+                  #             'par':{
+                  #                 'penalty': ('l1','l2'),
+                  #                 'solver': ('saga','lbfgs')
                                  
-                              }
-                  },
-                  'ridge_log':{
-                              'mod':RidgeClassifier(random_state = 42),
-                              'par':{
-                                  'alpha':[0.2, 0.4, 0.6, 0.8, 1],
-                                  'solver': ('auto', 'svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga')
-                              }
+                  #             }
+                  # },
+                  # 'ridge_log':{
+                  #             'mod':RidgeClassifier(random_state = 42),
+                  #             'par':{
+                  #                 'alpha':[0.2, 0.4, 0.6, 0.8, 1],
+                  #                 'solver': ('auto', 'svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga')
+                  #             }
                          
-                  },
-                  'naiveBayes':{
-                              'mod':GaussianNB(),
-                              'par':{}
+                  # },
+                  # 'naiveBayes':{
+                  #             'mod':GaussianNB(),
+                  #             'par':{}
                          
-                  },
-                  'bernoulli':{
-                              'mod':BernoulliNB(),
-                              'par':{
-                                  'fit_prior':[True, False],
-                                  'alpha': [0,0.2,0.4,0.6,0.8,1]
-                              }
+                  # },
+                  # 'bernoulli':{
+                  #             'mod':BernoulliNB(),
+                  #             'par':{
+                  #                 'fit_prior':[True, False],
+                  #                 'alpha': [0,0.2,0.4,0.6,0.8,1]
+                  #             }
                          
-                  },
-                  'qda':{
-                              'mod':QuadraticDiscriminantAnalysis(),
-                              'par':{
-                                  'reg_param':[0,0.3,0.5,0.7,0.9]
-                              }
+                  # },
+                  # 'qda':{
+                  #             'mod':QuadraticDiscriminantAnalysis(),
+                  #             'par':{
+                  #                 'reg_param':[0,0.3,0.5,0.7,0.9]
+                  #             }
                          
-                  },
-                  'nn':{
-                              'mod' : MLPClassifier( solver = 'adam',shuffle = True, random_state= 42),
-                              'par':{
-                                  'hidden_layer_sizes' : layers_nn,
-                                  'activation' : ('logistic', 'relu','tanh','identity'),
-                                  'learning_rate_init': [0.001,0.01,0.1,0.3,0.5,0.9],
-                                  'alpha':[0.05, 0.1, 0.5 , 3, 5, 10, 20]
-                                  }
+                  # },
+                  # 'nn':{
+                  #             'mod' : MLPClassifier( solver = 'adam',shuffle = True, random_state= 42),
+                  #             'par':{
+                  #                 'hidden_layer_sizes' : layers_nn,
+                  #                 'activation' : ('logistic', 'relu','tanh','identity'),
+                  #                 'learning_rate_init': [0.001,0.01,0.1,0.3,0.5,0.9],
+                  #                 'alpha':[0.05, 0.1, 0.5 , 3, 5, 10, 20]
+                  #                 }
                          
-                  },
+                  #},
                   'rforest':{
                             'mod': RandomForestClassifier(random_state= 42),
                             'par': {'n_estimators':[10,20,30,40,50,60,70,80,90,100,200,300,400,500],
@@ -206,7 +207,7 @@ def main(d_ini, d_fin):
     cv = 3
     balance = 'rus'
     score = 'roc_auc'
-    prop_deseada_under = 0.3
+    prop_deseada_under = 0.4
     n_proc = multiprocessing.cpu_count() -1
     
     X_test, Y_test, models, selected = mod.train(X, 
@@ -252,5 +253,5 @@ def main(d_ini, d_fin):
 if __name__ == '__main__':
     
     d_ini = dt.datetime(2019,1,1)
-    d_fin = dt.datetime(2019,7,1)    
+    d_fin = dt.datetime(2019,8,1)    
     main(d_ini, d_fin)

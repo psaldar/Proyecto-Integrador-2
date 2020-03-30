@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 ### Asignar hora del dia para cada accidente (solo el entero de la hora)
 def extraehora(HORA):
-    if 'PM' in HORA:
+    if 'p. m.' in HORA:
         if '12:' not in HORA:
             hora = int(HORA.split(':')[0]) + 12
         else:
@@ -43,7 +43,7 @@ def extraehora(HORA):
     return hora
 
 def extraehora2(HORA):
-    if 'p. m.' in HORA:
+    if 'PM' in HORA:
         if '12:' not in HORA:
             hora = int(HORA[:2]) + 12
         else:
@@ -100,7 +100,7 @@ def read_accidentes(d_ini, d_fin):
     db_name = 'info_clima2019.sqlite3'
     db_path = f'data/{db_name}'
         
-    query = """ SELECT * 
+    query = f""" SELECT * 
                 FROM raw_accidentes
                 WHERE
                 TW >= '{d_ini}' AND
@@ -206,8 +206,8 @@ def grid(base_path, now_date, path_file, os_X_tt, os_Y_tt, models,
        
        res = pd.DataFrame(aux.cv_results_)  
        
-       bAccuracy = res[res['params']==aux.best_params_]['mean_test_balanced_accuracy']
-       fScore = res[res['params']==aux.best_params_]['mean_test_f1']
+       bAccuracy = res[res['params']==aux.best_params_]['mean_test_balanced_accuracy'].values[0]
+       fScore = res[res['params']==aux.best_params_]['mean_test_f1'].values[0]
        
        selection_time = time.time() - t_beg
        

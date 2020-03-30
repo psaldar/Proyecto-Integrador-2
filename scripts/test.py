@@ -91,6 +91,6 @@ def main(d_ini, d_fin):
 
 if __name__ == '__main__':
     
-    d_ini = dt.datetime(2019,7,1)
+    d_ini = dt.datetime(2019,8,1)
     d_fin = dt.datetime(2020,1,1)    
     main(d_ini, d_fin)
