@@ -61,7 +61,7 @@ from scripts.clase_model.modelo import Modelo
 
 def main(d_ini, d_fin):
     
-    version = 'ver001'
+    version = 'ver002'
     now_date = dt.datetime.now()
     descripcion = """ Entrena modelo para realizar la prediccion de accidentes
                        en los barrios del Poblado"""
@@ -195,6 +195,9 @@ def main(d_ini, d_fin):
                 'villacarlota']
     
     data_org = data_org[data_org['BARRIO'].isin(poblado)]
+    
+    data_org['poblado'] = data_org['BARRIO']
+    data_org= pd.get_dummies(data_org, columns=['poblado'])
     
     X = data_org.drop(columns = ['TW','BARRIO','Accidente','summary'])
     Y = data_org['Accidente']    

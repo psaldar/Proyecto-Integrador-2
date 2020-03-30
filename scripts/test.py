@@ -7,6 +7,7 @@ Created on Sun Mar 29 17:46:02 2020
 import os
 import sys
 import json
+import pandas as pd
 import datetime as dt
 current_dir = os.getcwd()
 #%%
@@ -39,7 +40,7 @@ logging.basicConfig(level=logging.DEBUG,
 #%%
 def main(d_ini, d_fin):
     
-    version = 'ver001'    
+    version = 'ver002'    
     mod_version = funciones.carga_model(base_path, f'models/{version}', version)
     
     if 'model' in mod_version:
@@ -68,6 +69,9 @@ def main(d_ini, d_fin):
                 'villacarlota']
     
     data_org = data_org[data_org['BARRIO'].isin(poblado)]
+    
+    data_org['poblado'] = data_org['BARRIO']
+    data_org= pd.get_dummies(data_org, columns=['poblado'])
     
     X = data_org.drop(columns = ['TW','BARRIO','Accidente','summary'])
     Y = data_org['Accidente']

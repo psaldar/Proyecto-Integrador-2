@@ -197,10 +197,17 @@ def grid(base_path, now_date, path_file, os_X_tt, os_Y_tt, models,
              parameters[aux] = models[name]['par'][par]
              
        aux = GridSearchCV(pipeline, parameters, n_jobs = n_proc,\
-                          scoring = score, verbose=2, cv = cv)
+                          scoring = ['roc_auc','balanced_accuracy','f1'], 
+                          verbose=2, cv = cv,refit = score)
+           
        aux.fit(os_X_tt, os_Y_tt)
        models[name]['bestModel'] = aux.best_estimator_
        models[name]['mae'] = aux.best_score_
+       
+       res = pd.DataFrame(aux.cv_results_)  
+       
+       bAccuracy = res[res['params']==aux.best_params_]['mean_test_balanced_accuracy']
+       fScore = res[res['params']==aux.best_params_]['mean_test_f1']
        
        selection_time = time.time() - t_beg
        
@@ -213,6 +220,8 @@ def grid(base_path, now_date, path_file, os_X_tt, os_Y_tt, models,
        
        logger.info(f"El tiempo de seleccion fue: {selection_time:0.3f} s")
        logger.info(f"El {score} de la familia {name} es: {models[name]['mae']:0.3f}")
+       logger.info(f"El b_accuracy de la familia {name} es: {bAccuracy:0.3f}")
+       logger.info(f"El fscore de la familia {name} es: {fScore:0.3f}")
        logger.info('*'*80)
        
     mod_name = None
@@ -350,8 +359,8 @@ def precision_recall_graph(base_path, selected, ev_data, save = False):
     
     ax[1].set_xlim([0.0, 1.0])
     ax[1].set_ylim([0.0, 1.05])
-    ax[1].set_xlabel('Precision')
-    ax[1].set_ylabel('Recall')    
+    ax[1].set_xlabel('Recall')
+    ax[1].set_ylabel('Precision')    
     ax[1].set_title('Precision-Recall Curve')
     
     if save:
@@ -397,8 +406,8 @@ def precision_recall_graph_test(base_path, ev_data, save = False):
     
     ax[1].set_xlim([0.0, 1.0])
     ax[1].set_ylim([0.0, 1.05])
-    ax[1].set_xlabel('Precision')
-    ax[1].set_ylabel('Recall')    
+    ax[1].set_xlabel('Recall')
+    ax[1].set_ylabel('Precision')    
     ax[1].set_title('Precision-Recall Curve')
     
     if save:
@@ -415,8 +424,9 @@ def matrix_confusion(base_path, selected, ev_data, bound,save = False):
     cols_plot = ['Accidente', 'Predicted']
     pl_data = ev_data[cols_plot]
     pl_data['Predicted'] = (pl_data['Predicted'] > bound).astype(int) 
-                    
-    mat = (confusion_matrix(pl_data['Accidente'].values, pl_data['Predicted']).ravel()) 
+    lon_g = len(pl_data['Accidente'])
+    
+    mat = (confusion_matrix(pl_data['Accidente'].values, pl_data['Predicted']).ravel()/lon_g) * 100
     
     fig, ax = plt.subplots(figsize=(8,8))
     sns.heatmap(np.array(mat).reshape((2,2)), cbar=False,annot=True, xticklabels=['Pred 0', 'Pred 1'], annot_kws={'fontsize' : 15}, yticklabels=['Real 0', 'Real 1'])
@@ -438,8 +448,9 @@ def matrix_confusion_test(base_path, ev_data, bound,save = False):
     cols_plot = ['Accidente', 'Predicted']
     pl_data = ev_data[cols_plot]
     pl_data['Predicted'] = (pl_data['Predicted'] > bound).astype(int)    
+    lon_g = len(pl_data['Accidente'])
     
-    mat = (confusion_matrix(pl_data['Accidente'].values, pl_data['Predicted']).ravel())
+    mat = (confusion_matrix(pl_data['Accidente'].values, pl_data['Predicted']).ravel()/lon_g) * 100
     
     fig, ax = plt.subplots(figsize=(8,8))
     sns.heatmap(np.array(mat).reshape((2,2)), cbar=False,annot=True, xticklabels=['Pred 0', 'Pred 1'], annot_kws={'fontsize' : 15}, yticklabels=['Real 0', 'Real 1'])
