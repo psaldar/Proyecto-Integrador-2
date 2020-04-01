@@ -29,3 +29,5 @@ data/darksky_key.json
 # Archivos pesados csv
 data/info_2019.csv
 data/Accidentalidad_georreferenciada_*.csv
+data/info_poblado2019.csv
+data/info_poblado_all.csv
