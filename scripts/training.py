@@ -61,11 +61,19 @@ from scripts.clase_model.modelo import Modelo
 
 def main(d_ini, d_fin):
     
-    version = 'ver002'
+    version = 'ver007'
     now_date = dt.datetime.now()
-    descripcion = """ Entrena modelo para realizar la prediccion de accidentes
-                       en los barrios del Poblado. Considera en el diccionario
-                       de modelos, solo los basados en arboles"""
+    
+    cv = 3
+    balance = 'rus'
+    score = 'roc_auc'
+    prop_deseada_under = 0.4
+    n_proc = multiprocessing.cpu_count() -1
+    
+    descripcion = f""" Entrena modelo para realizar la prediccion de accidentes
+                       en los barrios del Poblado. considera solo variables
+                       de hora, dia semana y climaticas con sus means. Entrena en las
+                       fechas {d_ini}-{d_fin}. {balance}-{score}-{prop_deseada_under}."""
                        
     mod = Modelo(now_date, version, base_path, descripcion)
 
@@ -87,82 +95,82 @@ def main(d_ini, d_fin):
     layers_nn = list(set(layers_nn))
     
     models = {
-                  # 'logistic':{
-                  #             'mod':LogisticRegression(random_state = 42),
-                  #             'par':{
-                  #                 'penalty': ('l1','l2'),
-                  #                 'solver': ('saga','lbfgs')
+                   'logistic':{
+                               'mod':LogisticRegression(random_state = 42),
+                               'par':{
+                                   'penalty': ('l1','l2'),
+                                   'solver': ('saga','lbfgs')
                                  
-                  #             }
-                  # },
-                  # 'ridge_log':{
-                  #             'mod':RidgeClassifier(random_state = 42),
-                  #             'par':{
-                  #                 'alpha':[0.2, 0.4, 0.6, 0.8, 1],
-                  #                 'solver': ('auto', 'svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga')
-                  #             }
+                               }
+                   },
+                    'ridge_log':{
+                                'mod':RidgeClassifier(random_state = 42),
+                                'par':{
+                                    'alpha':[0.2, 0.4, 0.6, 0.8, 1],
+                                    'solver': ('auto', 'svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga')
+                                }
                          
-                  # },
-                  # 'naiveBayes':{
-                  #             'mod':GaussianNB(),
-                  #             'par':{}
+                    },
+                    'naiveBayes':{
+                                'mod':GaussianNB(),
+                                'par':{}
                          
-                  # },
-                  # 'bernoulli':{
-                  #             'mod':BernoulliNB(),
-                  #             'par':{
-                  #                 'fit_prior':[True, False],
-                  #                 'alpha': [0,0.2,0.4,0.6,0.8,1]
-                  #             }
+                    },
+                    'bernoulli':{
+                                'mod':BernoulliNB(),
+                                'par':{
+                                    'fit_prior':[True, False],
+                                    'alpha': [0,0.2,0.4,0.6,0.8,1]
+                                }
                          
-                  # },
-                  # 'qda':{
-                  #             'mod':QuadraticDiscriminantAnalysis(),
-                  #             'par':{
-                  #                 'reg_param':[0,0.3,0.5,0.7,0.9]
-                  #             }
+                    },
+                    'qda':{
+                                'mod':QuadraticDiscriminantAnalysis(),
+                                'par':{
+                                    'reg_param':[0,0.3,0.5,0.7,0.9]
+                                }
                          
-                  # },
-                  # 'nn':{
-                  #             'mod' : MLPClassifier( solver = 'adam',shuffle = True, random_state= 42),
-                  #             'par':{
-                  #                 'hidden_layer_sizes' : layers_nn,
-                  #                 'activation' : ('logistic', 'relu','tanh','identity'),
-                  #                 'learning_rate_init': [0.001,0.01,0.1,0.3,0.5,0.9],
-                  #                 'alpha':[0.05, 0.1, 0.5 , 3, 5, 10, 20]
-                  #                 }
-                         
-                  #},
-                  'rforest':{
-                            'mod': RandomForestClassifier(random_state= 42),
-                            'par': {'n_estimators':[10,20,30,40,50,60,70,80,90,100,200,300,400,500],
-                                    'max_depth': [None, 2, 4, 6, 8, 10, 20, 30],
-                                    'criterion':('gini','entropy'),
-                                    'bootstrap': [True,False]
+                    },
+                    'nn':{
+                                'mod' : MLPClassifier( solver = 'adam',shuffle = True, random_state= 42),
+                                'par':{
+                                    'hidden_layer_sizes' : layers_nn,
+                                    'activation' : ('logistic', 'relu','tanh','identity'),
+                                    'learning_rate_init': [0.001,0.01,0.1,0.3,0.5,0.9],
+                                    'alpha':[0.05, 0.1, 0.5 , 3, 5, 10, 20]
                                     }
-                  },
-                  'xtree':{
-                            'mod': ExtraTreesClassifier(random_state = 42),
-                            'par': {'n_estimators':[10,20,30,40,50,60,70,80,90,100,200,300,400,500],
-                                    'max_depth':[None, 2, 4, 6, 8, 10, 20, 30],
-                                    'criterion':('gini','entropy'),
-                                    'bootstrap': [True,False]}                     
-                  },
-                  'gradient':{
-                              'mod' : GradientBoostingClassifier(random_state = 42),
-                              'par' : {'loss' : ('deviance', 'exponential'),
-                                      'n_estimators': [10,20,30,40,50,60,70,80,90,100,200,300,400,500],
-                                      'max_depth' : [3, 4, 5, 6, 7, 8, 9],
-                                      'learning_rate':[0.1,0.3,0.5,0.7,0.9]
-                                      }
-                  },
-                  'xgboost':{
-                          'mod':XGBClassifier(random_state = 42),
-                          'par':{
-                                'n_estimators':[10,20,30,40,50,60,70,80,90,100,200,300,400,500],
-                                'max_depth': [ 2, 4, 6, 8, 10, 20, 30]
-                              }
-                          }
+                         
+                   },
+                   'rforest':{
+                             'mod': RandomForestClassifier(random_state= 42),
+                             'par': {'n_estimators':[10,20,30,40,50,60,70,80,90,100,200,300,400,500],
+                                     'max_depth': [None, 2, 4, 6, 8, 10, 20, 30],
+                                     'criterion':('gini','entropy'),
+                                     'bootstrap': [True,False]
+                                     }
+                   },
+                   'xtree':{
+                             'mod': ExtraTreesClassifier(random_state = 42),
+                             'par': {'n_estimators':[10,20,30,40,50,60,70,80,90,100,200,300,400,500],
+                                     'max_depth':[None, 2, 4, 6, 8, 10, 20, 30],
+                                     'criterion':('gini','entropy'),
+                                     'bootstrap': [True,False]}                     
+                   },
+                   'gradient':{
+                               'mod' : GradientBoostingClassifier(random_state = 42),
+                               'par' : {'loss' : ('deviance', 'exponential'),
+                                       'n_estimators': [10,20,30,40,50,60,70,80,90,100,200,300,400,500],
+                                       'max_depth' : [3, 4, 5, 6, 7, 8, 9],
+                                       'learning_rate':[0.1,0.3,0.5,0.7,0.9]
+                                       }
+                   },
+                   'xgboost':{
+                           'mod':XGBClassifier(random_state = 42),
+                           'par':{
+                                 'n_estimators':[10,20,30,40,50,60,70,80,90,100,200,300,400,500],
+                                 'max_depth': [ 2, 4, 6, 8, 10, 20, 30]
+                               }
+                           }
               }
     
     # models = {
@@ -178,37 +186,52 @@ def main(d_ini, d_fin):
     
     mod.models = models
     
-    data = funciones.read_clima_accidentes(d_ini, d_fin)
+    data = funciones.read_clima_accidentes(d_ini, d_fin, poblado = True)
     data_org = funciones.organizar_data_infoClima(data)
     
-    
-    poblado = ['alejandria','altosdelpoblado',
-                'astorga','barriocolombia',
-                'castropol','elcastillo',
-                'eldiamanteno2','elpoblado',
-                'eltesoro','laaguacatala',
-                'laflorida','lalinde',
-                'laslomasno1','laslomasno2',
-                'losbalsosno1','losbalsosno2',
-                'losnaranjos','manila',
-                'patiobonito','sanlucas',
-                'santamariadelosangeles',
-                'villacarlota']
-    
-    data_org = data_org[data_org['BARRIO'].isin(poblado)]
-    
-    data_org['poblado'] = data_org['BARRIO']
-    data_org= pd.get_dummies(data_org, columns=['poblado'])
+    #data_org['poblado'] = data_org['BARRIO']
+    #data_org= pd.get_dummies(data_org, columns=['poblado'])
     
     X = data_org.drop(columns = ['TW','BARRIO','Accidente','summary'])
+    
+    
+    ### Conservo solo climaticas y variables relevantes
+    
+    # vars_ele = ['precipIntensity',
+    #             'precipProbability', 'temperature', 'apparentTemperature', 'dewPoint',
+    #             'humidity', 'windSpeed', 'windBearing', 'cloudCover',  
+    #             'uvIndex', 'visibility', 'poblado_alejandria', 
+    #             'poblado_altosdelpoblado', 'poblado_astorga', 'poblado_castropol', 
+    #             'poblado_elcastillo', 'poblado_eldiamanteno2', 
+    #             'poblado_laaguacatala', 'poblado_lalinde', 'poblado_losbalsosno1', 
+    #             'poblado_losnaranjos', 'poblado_manila', 'poblado_sanlucas', 
+    #             'poblado_santamariadelosangeles', 'poblado_villacarlota', 'hora_1', 
+    #             'hora_2', 'hora_3', 'hora_6', 'hora_7', 'hora_9', 'hora_10', 
+    #             'hora_14', 'hora_16', 'hora_19', 'hora_20', 'hora_21', 
+    #             'hora_23', 'icon_partly-cloudy-day', 
+    #             'icon_partly-cloudy-night', 'icon_rain', 'dia_sem_3', 'dia_sem_4', 
+    #             'dia_sem_5', 'dia_sem_6', 'humidity_mean', 'windSpeed_mean']
+    
+    ### Fin
+    
+    ### Caso sin var climaticas
+    # vars_ele = ['hora_0', 'hora_1', 'hora_2', 'hora_3', 'hora_4', 'hora_5',
+    #             'hora_6', 'hora_7', 'hora_8', 'hora_9', 'hora_10', 'hora_11', 'hora_12',
+    #             'hora_13', 'hora_14', 'hora_15', 'hora_16', 'hora_17', 'hora_18',
+    #             'hora_19', 'hora_20', 'hora_21', 'hora_22', 'hora_23','dia_sem_0',
+    #             'dia_sem_1', 'dia_sem_2', 'dia_sem_3', 'dia_sem_4', 'dia_sem_5',
+    #             'dia_sem_6','poblado_alejandria', 
+    #             'poblado_altosdelpoblado', 'poblado_astorga', 'poblado_castropol', 
+    #             'poblado_elcastillo', 'poblado_eldiamanteno2', 
+    #             'poblado_laaguacatala', 'poblado_lalinde', 'poblado_losbalsosno1', 
+    #             'poblado_losnaranjos', 'poblado_manila', 'poblado_sanlucas', 
+    #             'poblado_santamariadelosangeles', 'poblado_villacarlota']
+    
+    # X = X[vars_ele]
+    ## Fin
+    
     Y = data_org['Accidente']    
     
-    
-    cv = 3
-    balance = 'rus'
-    score = 'roc_auc'
-    prop_deseada_under = 0.4
-    n_proc = multiprocessing.cpu_count() -1
     
     X_test, Y_test, models, selected = mod.train(X, 
                                                  Y, 
@@ -252,6 +275,6 @@ def main(d_ini, d_fin):
 
 if __name__ == '__main__':
     
-    d_ini = dt.datetime(2019,1,1)
+    d_ini = dt.datetime(2017,6,1)
     d_fin = dt.datetime(2019,8,1)    
     main(d_ini, d_fin)

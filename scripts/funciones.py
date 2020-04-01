@@ -97,7 +97,7 @@ def read_sqlite(db_path, query):
     
 def read_accidentes(d_ini, d_fin):
     
-    db_name = 'info_clima2019.sqlite3'
+    db_name = 'database_pi2.sqlite3'
     db_path = f'data/{db_name}'
         
     query = f""" SELECT * 
@@ -112,22 +112,56 @@ def read_accidentes(d_ini, d_fin):
     return accidentes
 
 
-def read_clima_accidentes(d_ini, d_fin):
+def read_clima_accidentes(d_ini, d_fin, poblado = False):
     
-    db_name = 'info_clima2019.sqlite3'
+    db_name = 'database_pi2.sqlite3'
     db_path = f'data/{db_name}'    
     
-    query_clima = f""" SELECT *
-                      FROM clima
-                      WHERE
-                      TW >= '{d_ini}' AND
-                      TW < '{d_fin}' """
+    
+    if poblado:
+        
+        poblado = ['alejandria','altosdelpoblado',
+                'astorga','barriocolombia',
+                'castropol','elcastillo',
+                'eldiamanteno2','elpoblado',
+                'eltesoro','laaguacatala',
+                'laflorida','lalinde',
+                'laslomasno1','laslomasno2',
+                'losbalsosno1','losbalsosno2',
+                'losnaranjos','manila',
+                'patiobonito','sanlucas',
+                'santamariadelosangeles',
+                'villacarlota']
+                
+        barrios = "','".join(poblado)
+        
+        query_clima = f""" SELECT *
+                          FROM clima
+                          WHERE
+                          TW >= '{d_ini}' AND
+                          TW < '{d_fin}' AND
+                          BARRIO IN ('{barrios}')"""
+    
+        query_accidentes = f""" SELECT *
+                              FROM accidentes
+                              WHERE
+                              TW >= '{d_ini}' AND
+                              TW < '{d_fin}' AND 
+                              BARRIO IN ('{barrios}') """
+                              
+    else:
 
-    query_accidentes = f""" SELECT *
-                          FROM accidentes
+        query_clima = f""" SELECT *
+                          FROM clima
                           WHERE
                           TW >= '{d_ini}' AND
                           TW < '{d_fin}' """
+    
+        query_accidentes = f""" SELECT *
+                              FROM accidentes
+                              WHERE
+                              TW >= '{d_ini}' AND
+                              TW < '{d_fin}' """            
 
     clima = read_sqlite(db_path, query_clima)
     clima['TW'] = pd.to_datetime(clima['TW'])
@@ -140,6 +174,10 @@ def read_clima_accidentes(d_ini, d_fin):
                                   how = 'left', on = ['TW','BARRIO'])
     
     data_accidentes['Accidente'] = data_accidentes['Accidente'].fillna(0)
+    data_accidentes = data_accidentes[~data_accidentes['icon'].isna()].reset_index(drop = True)
+    
+    
+    data_accidentes = data_accidentes.drop(columns = ['windBearing'])
     
     return data_accidentes
 
@@ -487,3 +525,24 @@ def carga_model(base_path, path_savs, sav_name):
         logger.error(f"Falla en base de datos {f_path}: " + str(e))    
        
     return samples
+
+def carga_model_ind(base_path, path_savs, sav_name):
+    ext = 'sav'
+    f_name = f"{sav_name}.{ext}"
+    
+    f_path = os.path.join(base_path, path_savs, f_name)
+    
+    samples = {'path' : f_path}
+    
+    try:
+        if not os.path.isfile(f_path):
+            logger.error(f"File {f_path} does not exist")            
+            raise Exception('non-existing file')
+            
+        loaded_model = joblib.load(f_path)
+        
+            
+    except Exception as e:
+        logger.error(f"Falla en base de datos {f_path}: " + str(e))    
+       
+    return loaded_model

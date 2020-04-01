@@ -40,7 +40,7 @@ logging.basicConfig(level=logging.DEBUG,
 #%%
 def main(d_ini, d_fin):
     
-    version = 'ver002'    
+    version = 'ver006p2'    
     mod_version = funciones.carga_model(base_path, f'models/{version}', version)
     
     if 'model' in mod_version:
@@ -51,24 +51,9 @@ def main(d_ini, d_fin):
         logger.error("No model found")
         return None
     
-    data = funciones.read_clima_accidentes(d_ini, d_fin)
+    data = funciones.read_clima_accidentes(d_ini, d_fin, poblado = True)
     data_org = funciones.organizar_data_infoClima(data)
     
-    
-    poblado = ['alejandria','altosdelpoblado',
-                'astorga','barriocolombia',
-                'castropol','elcastillo',
-                'eldiamanteno2','elpoblado',
-                'eltesoro','laaguacatala',
-                'laflorida','lalinde',
-                'laslomasno1','laslomasno2',
-                'losbalsosno1','losbalsosno2',
-                'losnaranjos','manila',
-                'patiobonito','sanlucas',
-                'santamariadelosangeles',
-                'villacarlota']
-    
-    data_org = data_org[data_org['BARRIO'].isin(poblado)]
     
     data_org['poblado'] = data_org['BARRIO']
     data_org= pd.get_dummies(data_org, columns=['poblado'])
@@ -92,5 +77,5 @@ def main(d_ini, d_fin):
 if __name__ == '__main__':
     
     d_ini = dt.datetime(2019,8,1)
-    d_fin = dt.datetime(2020,1,1)    
+    d_fin = dt.datetime(2019,10,1)    
     main(d_ini, d_fin)

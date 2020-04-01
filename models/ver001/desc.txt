@@ -1,0 +1,4 @@
+DESCRIPCION:
+Entrena modelo considerando todo el diccionario de modelos
+ademas incluye todas las variables climaticas, todas las means
+y todos los barrios del poblado + hora + dia semana

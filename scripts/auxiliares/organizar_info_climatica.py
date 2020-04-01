@@ -32,7 +32,7 @@ darksky_api = darksky(api_key)
 #%%
 
 ### Realiza la conexion al sqlite donde se guarda la informacion climatica
-file_name = 'data/info_clima2019.sqlite3'
+file_name = 'data/info_clima2018.sqlite3'
 conn = sqlite3.connect(file_name)
 
 ### Esto se realiza en caso que ya exista informacion consultada en la BD
@@ -43,14 +43,14 @@ conn = sqlite3.connect(file_name)
 #barrios = barrios[barrios['TW']==barrios['TW'].max()].reset_index(drop = True)
 
 ### Define el rango de fechas en el cual se busca la informacion
-d_ini = dt.datetime(2019,1,1)
-d_fin = dt.datetime(2019,12,31)
+d_ini = dt.datetime(2018,1,1)
+d_fin = dt.datetime(2018,12,31)
 
 ### Se obtiene un arreglo cuyas elementos son cada uno de los dias entre el
 ### rango de fechas dadas, ademas de incluir la informacion de los centroides
 ### de los barrios en donde se hara la busqueda
 dates = pd.date_range(start=d_ini, end=d_fin, freq='1D')
-centroides = pd.read_csv('data/centroides_barrios2019.csv', sep = ',')
+centroides = pd.read_csv('data/centroides_barrios2018.csv', sep = ',')
 
 ### elimina los barrios que ya fueron consultados
 #centroides = centroides[~centroides['BARRIO'].isin(barrios['BARRIO'])].reset_index(drop = True)
@@ -78,6 +78,11 @@ for barrio, lon, lat in centroides[['BARRIO','Lon','Lat']].values:
 
             df = pd.DataFrame(data).rename(columns = {'time':'TW'})
             df['BARRIO'] = barrio
+            
+            for col in clima_cols:
+                if not col in df.columns:
+                    df[col] = None
+            
             df[clima_cols].to_sql('clima',conn, if_exists = 'append', index = False)
             
         else:

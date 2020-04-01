@@ -24,10 +24,19 @@ import scripts.funciones as funciones
 #%% Importacion de los datos
 
 ### Leer datos
-datos = pd.read_csv('data/Accidentalidad_georreferenciada_2019.csv')
+datos = pd.read_csv('data/Accidentalidad_georreferenciada_2017.csv')
 
 ### Eliminamos los registros donde no tenemos informacion del barrio al cual
 ### corresponde
+
+### Para 2018 y 2019
+# datos = datos.dropna(subset = ['BARRIO']).reset_index(drop = True).rename(columns ={'LONGITUD':'Lon',
+#                                                                                     'LATITUD':'Lat',
+#                                                                                     'DIA_NOMBRE':'Dia_sem',
+#                                                                                     'DIA': 'Dia',
+#                                                                                     'MES':'Mes'})
+
+### Para 2017
 datos = datos.dropna(subset = ['BARRIO']).reset_index(drop = True).rename(columns ={'X':'Lon',
                                                                                     'Y':'Lat',
                                                                                     'DIA_NOMBRE':'Dia_sem',
@@ -71,12 +80,12 @@ for barrio in barrios:
 
 datos['BARRIO'] =  barrios_limpios
 datos['FECHA'] = datos['FECHA'].apply(lambda x: pd.to_datetime(x).strftime('%Y-%m-%d'))
-datos['Hora_num'] = datos['HORA'].apply(funciones.extraehora)
+datos['Hora_num'] = datos['HORA'].apply(funciones.extraehora2)
 datos['TW'] = datos.apply(lambda x: pd.to_datetime(x['FECHA']) + dt.timedelta(hours = x['Hora_num']), axis = 1)
 #%%  elimino registros con barrios raros y obtengo la informacion del
 ### centroide de los barrios
 
-barrios_raros = ['9086','6001','7001','auc1','auc2','0']
+barrios_raros = ['9086','6001','7001','9004','auc1','auc2','0']
 datos = datos[~datos['BARRIO'].isin(barrios_raros)].reset_index(drop = True)
 
 datos = datos.dropna(subset=['Lon','Lat']).reset_index(drop = True)
@@ -85,7 +94,7 @@ datos = datos.dropna(subset=['Lon','Lat']).reset_index(drop = True)
 coords_centroids = datos[['BARRIO','Lon','Lat']].groupby(['BARRIO']).mean().reset_index()#.rename(columns ={'X':'Lon',
                                                                                      #                  'Y':'Lat'})
 
-coords_centroids.to_csv('data/centroides_barrios2019.csv', index = False, sep = ',')
+coords_centroids.to_csv('data/centroides_barrios2017.csv', index = False, sep = ',')
 #%%
 ### Organizamos para cada barrio, si ocurrio o no un accidente en la ventana de
 ### tiempo
@@ -94,11 +103,11 @@ datos_b = datos.drop_duplicates(subset = ['TW','BARRIO'])
 
 cols_ord = ['TW','BARRIO','Lat','Lon','Dia_sem','Mes','Dia','Hora_num']
 datos_b = datos_b[cols_ord].rename(columns = {'Hora_num':'Hora'})
-datos_b.to_csv('data/proc_accidentes_2019.csv', index = False, sep = ',')
+datos_b.to_csv('data/proc_accidentes_2017.csv', index = False, sep = ',')
 #%%
 ### Esto solo se corre si se tiene recopilada la informacion de las variables
 ### climaticas
-db_name = 'info_clima2019.sqlite3'
+db_name = 'info_clima2017.sqlite3'
 conn = sqlite3.connect(f'data/{db_name}')
 
 datos.to_sql('raw_accidentes',conn, if_exists = 'append', index = False)

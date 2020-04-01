@@ -1,0 +1,4 @@
+DESCRIPCION:
+Entrena modelo considerando regresion logistica,
+ademas incluye todas las variables relacionadas al dia de la semana,
+hora y los barrios relevantes del poblado

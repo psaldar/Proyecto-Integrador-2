@@ -1,0 +1,33 @@
+2020-03-30 12:04:20,857 -********************************************************************************
+2020-03-30 12:04:20,857 -Model: rforest
+2020-03-30 12:06:42,876 -Saving model at C:\Users\pasal\Google Drive\EAFIT\Ciencia de Datos y Analitica\02 Segundo Semestre\Proyecto Integrador\Proyecto-Integrador-2/models/ver003\rforest_20200330_1204.sav
+2020-03-30 12:06:42,994 -El tiempo de seleccion fue: 142.019 s
+2020-03-30 12:06:42,995 -El roc_auc de la familia rforest es: 0.728
+2020-03-30 12:06:42,995 -El b_accuracy de la familia rforest es: 0.656
+2020-03-30 12:06:42,995 -El fscore de la familia rforest es: 0.572
+2020-03-30 12:06:42,995 -********************************************************************************
+2020-03-30 12:06:42,995 -********************************************************************************
+2020-03-30 12:06:42,995 -Model: xtree
+2020-03-30 12:08:13,737 -Saving model at C:\Users\pasal\Google Drive\EAFIT\Ciencia de Datos y Analitica\02 Segundo Semestre\Proyecto Integrador\Proyecto-Integrador-2/models/ver003\xtree_20200330_1204.sav
+2020-03-30 12:08:13,768 -El tiempo de seleccion fue: 90.742 s
+2020-03-30 12:08:13,768 -El roc_auc de la familia xtree es: 0.746
+2020-03-30 12:08:13,768 -El b_accuracy de la familia xtree es: 0.662
+2020-03-30 12:08:13,768 -El fscore de la familia xtree es: 0.570
+2020-03-30 12:08:13,768 -********************************************************************************
+2020-03-30 12:08:13,768 -********************************************************************************
+2020-03-30 12:08:13,768 -Model: gradient
+2020-03-30 12:20:18,536 -Saving model at C:\Users\pasal\Google Drive\EAFIT\Ciencia de Datos y Analitica\02 Segundo Semestre\Proyecto Integrador\Proyecto-Integrador-2/models/ver003\gradient_20200330_1204.sav
+2020-03-30 12:20:18,549 -El tiempo de seleccion fue: 724.768 s
+2020-03-30 12:20:18,549 -El roc_auc de la familia gradient es: 0.739
+2020-03-30 12:20:18,549 -El b_accuracy de la familia gradient es: 0.668
+2020-03-30 12:20:18,549 -El fscore de la familia gradient es: 0.591
+2020-03-30 12:20:18,549 -********************************************************************************
+2020-03-30 12:20:18,549 -********************************************************************************
+2020-03-30 12:20:18,549 -Model: xgboost
+2020-03-30 12:21:20,019 -Saving model at C:\Users\pasal\Google Drive\EAFIT\Ciencia de Datos y Analitica\02 Segundo Semestre\Proyecto Integrador\Proyecto-Integrador-2/models/ver003\xgboost_20200330_1204.sav
+2020-03-30 12:21:20,025 -El tiempo de seleccion fue: 61.470 s
+2020-03-30 12:21:20,026 -El roc_auc de la familia xgboost es: 0.742
+2020-03-30 12:21:20,026 -El b_accuracy de la familia xgboost es: 0.670
+2020-03-30 12:21:20,026 -El fscore de la familia xgboost es: 0.593
+2020-03-30 12:21:20,026 -********************************************************************************
+2020-03-30 12:21:20,026 -best roc_auc was: xtree with an error of: 0.7459107846901816
