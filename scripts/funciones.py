@@ -216,6 +216,24 @@ def organizar_data_infoClima(data):
     
     return data
 
+### Esta funcion organiza una variable extra que contiene informacion a cerca
+### de la cantidad de accidentes que han ocurrido en las ultimas X horas, estas
+### horas estan representadas en el parametro frecuencia como XH
+def obtener_accidentes_acumulados(data, raw_accidentes, freq = '10H'):
+    
+    raw_accidentes['Accidente'] = 1
+    spa_cum = raw_accidentes.pivot_table(values='Accidente', 
+                                         index='TW',
+                                         columns='BARRIO', 
+                                         aggfunc=sum)
+    spa_cum = spa_cum.resample('1H').agg('sum')
+    
+    Acc_sum = spa_cum.rolling(freq, closed = 'left').sum().stack().reset_index(drop = False)    
+    Acc_sum.columns = ['TW', 'BARRIO', f'cumAcc_{freq}']
+    
+    data = data.merge(Acc_sum, how = 'left', on =['TW','BARRIO']).fillna(0)
+    
+    return data
 
 #En la funcion grid, se considera un diccionario de modelos para ser entrenado,
 #el conjunto de datos para entrenar, y devuelve el mejor modelo entrenado

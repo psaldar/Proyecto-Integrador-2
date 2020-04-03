@@ -61,10 +61,11 @@ from scripts.clase_model.modelo import Modelo
 
 def main(d_ini, d_fin):
     
-    version = 'ver007'
+    version = 'ver008'
     now_date = dt.datetime.now()
     
     cv = 3
+    freq = '10H'
     balance = 'rus'
     score = 'roc_auc'
     prop_deseada_under = 0.4
@@ -72,7 +73,9 @@ def main(d_ini, d_fin):
     
     descripcion = f""" Entrena modelo para realizar la prediccion de accidentes
                        en los barrios del Poblado. considera solo variables
-                       de hora, dia semana y climaticas con sus means. Entrena en las
+                       de hora, dia semana y climaticas con sus means. 
+                       Adicional, considera un acumulado de accidentes
+                       considerando una frecuencia de {freq}. Entrena en las
                        fechas {d_ini}-{d_fin}. {balance}-{score}-{prop_deseada_under}."""
                        
     mod = Modelo(now_date, version, base_path, descripcion)
@@ -188,6 +191,15 @@ def main(d_ini, d_fin):
     
     data = funciones.read_clima_accidentes(d_ini, d_fin, poblado = True)
     data_org = funciones.organizar_data_infoClima(data)
+    
+    
+    ### agregamos la informacion relacionada a la cantidad de accidentes ocurridas
+    ### en las ultimas X horas
+    
+    raw_accidentes = funciones.read_accidentes(d_ini, d_fin)
+    data_org = funciones.obtener_accidentes_acumulados(data_org, 
+                                                        raw_accidentes, 
+                                                        freq = freq)
     
     #data_org['poblado'] = data_org['BARRIO']
     #data_org= pd.get_dummies(data_org, columns=['poblado'])

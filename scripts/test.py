@@ -40,7 +40,7 @@ logging.basicConfig(level=logging.DEBUG,
 #%%
 def main(d_ini, d_fin):
     
-    version = 'ver006p2'    
+    version = 'ver007'    
     mod_version = funciones.carga_model(base_path, f'models/{version}', version)
     
     if 'model' in mod_version:
@@ -54,6 +54,13 @@ def main(d_ini, d_fin):
     data = funciones.read_clima_accidentes(d_ini, d_fin, poblado = True)
     data_org = funciones.organizar_data_infoClima(data)
     
+    ### agregamos la informacion relacionada a la cantidad de accidentes ocurridas
+    ### en las ultimas X horas
+    
+    raw_accidentes = funciones.read_accidentes(d_ini, d_fin)
+    data_org = funciones.obtener_accidentes_acumulados(data_org, 
+                                                        raw_accidentes, 
+                                                        freq = '10H')    
     
     data_org['poblado'] = data_org['BARRIO']
     data_org= pd.get_dummies(data_org, columns=['poblado'])
