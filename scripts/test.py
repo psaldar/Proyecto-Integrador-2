@@ -40,7 +40,7 @@ logging.basicConfig(level=logging.DEBUG,
 #%%
 def main(d_ini, d_fin):
     
-    version = 'ver007'    
+    version = 'ver009'    
     mod_version = funciones.carga_model(base_path, f'models/{version}', version)
     
     if 'model' in mod_version:
@@ -57,10 +57,28 @@ def main(d_ini, d_fin):
     ### agregamos la informacion relacionada a la cantidad de accidentes ocurridas
     ### en las ultimas X horas
     
-    raw_accidentes = funciones.read_accidentes(d_ini, d_fin)
+    ### En caso que se considere acumulado de fallas, realiza la validacion
+    ### si el modelo entrenado tiene la frecuencia utilizada
+    try:
+        freq1 = mod.freq1
+        freq2 = mod.freq2
+    except Exception as e:
+        logger.info(f'Problemas con las frecuencias de las senales {e}')
+        freq1 = '1H'
+        freq2 = '1H'
+    
+    d_ini_acc = d_ini - dt.timedelta(hours = int(freq2.replace('H', '')))
+    raw_accidentes = funciones.read_accidentes(d_ini_acc, d_fin)
+    
+    ### Agrega senal a corto plazo
     data_org = funciones.obtener_accidentes_acumulados(data_org, 
                                                         raw_accidentes, 
-                                                        freq = '10H')    
+                                                        freq = freq1)
+    
+    ### Agrega senal a largo plazo
+    data_org = funciones.obtener_accidentes_acumulados(data_org, 
+                                                        raw_accidentes, 
+                                                        freq = freq2)
     
     data_org['poblado'] = data_org['BARRIO']
     data_org= pd.get_dummies(data_org, columns=['poblado'])
@@ -84,5 +102,5 @@ def main(d_ini, d_fin):
 if __name__ == '__main__':
     
     d_ini = dt.datetime(2019,8,1)
-    d_fin = dt.datetime(2019,10,1)    
+    d_fin = dt.datetime(2020,1,1)    
     main(d_ini, d_fin)

@@ -45,6 +45,8 @@ class Modelo:
         self.cutoff = None
         self.covariance = None
         self.inv_covariance = None
+        self.freq1 = '1H'
+        self.freq2 = '1H'
         
 
         if not os.path.isdir(self.models_path):

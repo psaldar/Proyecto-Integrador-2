@@ -61,11 +61,12 @@ from scripts.clase_model.modelo import Modelo
 
 def main(d_ini, d_fin):
     
-    version = 'ver008'
+    version = 'ver009'
     now_date = dt.datetime.now()
     
     cv = 3
-    freq = '10H'
+    freq1 = '108H'
+    freq2 = '336H'
     balance = 'rus'
     score = 'roc_auc'
     prop_deseada_under = 0.4
@@ -75,11 +76,14 @@ def main(d_ini, d_fin):
                        en los barrios del Poblado. considera solo variables
                        de hora, dia semana y climaticas con sus means. 
                        Adicional, considera un acumulado de accidentes
-                       considerando una frecuencia de {freq}. Entrena en las
+                       considerando una frecuencia de {freq1}-{freq2}. Entrena en las
                        fechas {d_ini}-{d_fin}. {balance}-{score}-{prop_deseada_under}."""
                        
     mod = Modelo(now_date, version, base_path, descripcion)
-
+    
+    mod.freq1 = freq1
+    mod.freq2 = freq2
+    
     layers_nn = []
 
     layer_lim_max = 7
@@ -196,34 +200,42 @@ def main(d_ini, d_fin):
     ### agregamos la informacion relacionada a la cantidad de accidentes ocurridas
     ### en las ultimas X horas
     
-    raw_accidentes = funciones.read_accidentes(d_ini, d_fin)
+    d_ini_acc = d_ini - dt.timedelta(hours = int(freq2.replace('H', '')))
+    raw_accidentes = funciones.read_accidentes(d_ini_acc, d_fin)
+    
+    ### Agrega senal a corto plazo
     data_org = funciones.obtener_accidentes_acumulados(data_org, 
                                                         raw_accidentes, 
-                                                        freq = freq)
+                                                        freq = freq1)
     
-    #data_org['poblado'] = data_org['BARRIO']
-    #data_org= pd.get_dummies(data_org, columns=['poblado'])
+    ### Agrega senal a largo plazo
+    data_org = funciones.obtener_accidentes_acumulados(data_org, 
+                                                        raw_accidentes, 
+                                                        freq = freq2)
+    
+    data_org['poblado'] = data_org['BARRIO']
+    data_org= pd.get_dummies(data_org, columns=['poblado'])
     
     X = data_org.drop(columns = ['TW','BARRIO','Accidente','summary'])
     
     
     ### Conservo solo climaticas y variables relevantes
     
-    # vars_ele = ['precipIntensity',
-    #             'precipProbability', 'temperature', 'apparentTemperature', 'dewPoint',
-    #             'humidity', 'windSpeed', 'windBearing', 'cloudCover',  
-    #             'uvIndex', 'visibility', 'poblado_alejandria', 
-    #             'poblado_altosdelpoblado', 'poblado_astorga', 'poblado_castropol', 
-    #             'poblado_elcastillo', 'poblado_eldiamanteno2', 
-    #             'poblado_laaguacatala', 'poblado_lalinde', 'poblado_losbalsosno1', 
-    #             'poblado_losnaranjos', 'poblado_manila', 'poblado_sanlucas', 
-    #             'poblado_santamariadelosangeles', 'poblado_villacarlota', 'hora_1', 
-    #             'hora_2', 'hora_3', 'hora_6', 'hora_7', 'hora_9', 'hora_10', 
-    #             'hora_14', 'hora_16', 'hora_19', 'hora_20', 'hora_21', 
-    #             'hora_23', 'icon_partly-cloudy-day', 
-    #             'icon_partly-cloudy-night', 'icon_rain', 'dia_sem_3', 'dia_sem_4', 
-    #             'dia_sem_5', 'dia_sem_6', 'humidity_mean', 'windSpeed_mean']
-    
+    vars_ele = ['precipIntensity',
+                'precipProbability', 'temperature', 'apparentTemperature', 'dewPoint',
+                'humidity', 'windSpeed', 'cloudCover',  
+                'uvIndex', 'visibility', 'poblado_alejandria', f'cumAcc_{freq1}',f'cumAcc_{freq2}', 
+                'poblado_altosdelpoblado', 'poblado_astorga', 'poblado_castropol', 
+                'poblado_elcastillo', 'poblado_eldiamanteno2', 
+                'poblado_laaguacatala', 'poblado_lalinde', 'poblado_losbalsosno1', 
+                'poblado_losnaranjos', 'poblado_manila', 'poblado_sanlucas', 
+                'poblado_santamariadelosangeles', 'poblado_villacarlota', 'hora_1', 
+                'hora_2', 'hora_3', 'hora_6', 'hora_7', 'hora_9', 'hora_10', 
+                'hora_14', 'hora_16', 'hora_19', 'hora_20', 'hora_21', 
+                'hora_23', 'icon_partly-cloudy-day', 
+                'icon_partly-cloudy-night', 'icon_rain', 'dia_sem_3', 'dia_sem_4', 
+                'dia_sem_5', 'dia_sem_6', 'humidity_mean', 'windSpeed_mean',]
+    X = X[vars_ele]    
     ### Fin
     
     ### Caso sin var climaticas
@@ -243,7 +255,6 @@ def main(d_ini, d_fin):
     ## Fin
     
     Y = data_org['Accidente']    
-    
     
     X_test, Y_test, models, selected = mod.train(X, 
                                                  Y, 

@@ -19,8 +19,6 @@ from sklearn.pipeline import Pipeline
 from sklearn.metrics import confusion_matrix
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import precision_recall_curve
-from sklearn.metrics import plot_precision_recall_curve
 #%%
 import logging
 
