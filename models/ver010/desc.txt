@@ -1,0 +1,4 @@
+DESCRIPCION:
+Entrena modelo considerando el diccionario de modelos completo,
+ademas incluye todas las variables relevantes relacionadas al dia de la semana,
+hora y todas las variables climaticas ademas de aquellas con su mean relevante y la informacion de los barrios

@@ -61,7 +61,7 @@ from scripts.clase_model.modelo import Modelo
 
 def main(d_ini, d_fin):
     
-    version = 'ver009'
+    version = 'ver010'
     now_date = dt.datetime.now()
     
     cv = 3
@@ -75,7 +75,7 @@ def main(d_ini, d_fin):
     descripcion = f""" Entrena modelo para realizar la prediccion de accidentes
                        en los barrios del Poblado. considera solo variables
                        de hora, dia semana y climaticas con sus means. 
-                       Adicional, considera un acumulado de accidentes
+                       Adicional, NO considera un acumulado de accidentes
                        considerando una frecuencia de {freq1}-{freq2}. Entrena en las
                        fechas {d_ini}-{d_fin}. {balance}-{score}-{prop_deseada_under}."""
                        
@@ -203,15 +203,15 @@ def main(d_ini, d_fin):
     d_ini_acc = d_ini - dt.timedelta(hours = int(freq2.replace('H', '')))
     raw_accidentes = funciones.read_accidentes(d_ini_acc, d_fin)
     
-    ### Agrega senal a corto plazo
-    data_org = funciones.obtener_accidentes_acumulados(data_org, 
-                                                        raw_accidentes, 
-                                                        freq = freq1)
+    # ### Agrega senal a corto plazo
+    # data_org = funciones.obtener_accidentes_acumulados(data_org, 
+    #                                                     raw_accidentes, 
+    #                                                     freq = freq1)
     
-    ### Agrega senal a largo plazo
-    data_org = funciones.obtener_accidentes_acumulados(data_org, 
-                                                        raw_accidentes, 
-                                                        freq = freq2)
+    # ### Agrega senal a largo plazo
+    # data_org = funciones.obtener_accidentes_acumulados(data_org, 
+    #                                                     raw_accidentes, 
+    #                                                     freq = freq2)
     
     data_org['poblado'] = data_org['BARRIO']
     data_org= pd.get_dummies(data_org, columns=['poblado'])
@@ -224,7 +224,7 @@ def main(d_ini, d_fin):
     vars_ele = ['precipIntensity',
                 'precipProbability', 'temperature', 'apparentTemperature', 'dewPoint',
                 'humidity', 'windSpeed', 'cloudCover',  
-                'uvIndex', 'visibility', 'poblado_alejandria', f'cumAcc_{freq1}',f'cumAcc_{freq2}', 
+                'uvIndex', 'visibility', 'poblado_alejandria',# f'cumAcc_{freq1}',f'cumAcc_{freq2}', 
                 'poblado_altosdelpoblado', 'poblado_astorga', 'poblado_castropol', 
                 'poblado_elcastillo', 'poblado_eldiamanteno2', 
                 'poblado_laaguacatala', 'poblado_lalinde', 'poblado_losbalsosno1', 
