@@ -61,12 +61,12 @@ from scripts.clase_model.modelo import Modelo
 
 def main(d_ini, d_fin):
     
-    version = 'ver010'
+    version = 'ver010p2'
     now_date = dt.datetime.now()
     
     cv = 3
-    freq1 = '108H'
-    freq2 = '336H'
+    freq1 = '8H'
+    freq2 = '168H'
     balance = 'rus'
     score = 'roc_auc'
     prop_deseada_under = 0.4
@@ -75,9 +75,11 @@ def main(d_ini, d_fin):
     descripcion = f""" Entrena modelo para realizar la prediccion de accidentes
                        en los barrios del Poblado. considera solo variables
                        de hora, dia semana y climaticas con sus means. 
-                       Adicional, NO considera un acumulado de accidentes
+                       Adicional, considera un acumulado de accidentes
                        considerando una frecuencia de {freq1}-{freq2}. Entrena en las
-                       fechas {d_ini}-{d_fin}. {balance}-{score}-{prop_deseada_under}."""
+                       fechas {d_ini}-{d_fin}. {balance}-{score}-{prop_deseada_under}.
+                       Entrena el modelo ganador de la version 10 agregando la senal
+                       de fallas"""
                        
     mod = Modelo(now_date, version, base_path, descripcion)
     
@@ -101,95 +103,91 @@ def main(d_ini, d_fin):
           
     layers_nn = list(set(layers_nn))
     
-    models = {
-                   'logistic':{
-                               'mod':LogisticRegression(random_state = 42),
-                               'par':{
-                                   'penalty': ('l1','l2'),
-                                   'solver': ('saga','lbfgs')
+    # models = {
+    #                'logistic':{
+    #                            'mod':LogisticRegression(random_state = 42),
+    #                            'par':{
+    #                                'penalty': ('l1','l2'),
+    #                                'solver': ('saga','lbfgs')
                                  
-                               }
-                   },
-                    'ridge_log':{
-                                'mod':RidgeClassifier(random_state = 42),
-                                'par':{
-                                    'alpha':[0.2, 0.4, 0.6, 0.8, 1],
-                                    'solver': ('auto', 'svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga')
-                                }
+    #                            }
+    #                },
+    #                 'ridge_log':{
+    #                             'mod':RidgeClassifier(random_state = 42),
+    #                             'par':{
+    #                                 'alpha':[0.2, 0.4, 0.6, 0.8, 1],
+    #                                 'solver': ('auto', 'svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga')
+    #                             }
                          
-                    },
-                    'naiveBayes':{
-                                'mod':GaussianNB(),
-                                'par':{}
+    #                 },
+    #                 'naiveBayes':{
+    #                             'mod':GaussianNB(),
+    #                             'par':{}
                          
-                    },
-                    'bernoulli':{
-                                'mod':BernoulliNB(),
-                                'par':{
-                                    'fit_prior':[True, False],
-                                    'alpha': [0,0.2,0.4,0.6,0.8,1]
-                                }
+    #                 },
+    #                 'bernoulli':{
+    #                             'mod':BernoulliNB(),
+    #                             'par':{
+    #                                 'fit_prior':[True, False],
+    #                                 'alpha': [0,0.2,0.4,0.6,0.8,1]
+    #                             }
                          
-                    },
-                    'qda':{
-                                'mod':QuadraticDiscriminantAnalysis(),
-                                'par':{
-                                    'reg_param':[0,0.3,0.5,0.7,0.9]
-                                }
+    #                 },
+    #                 'qda':{
+    #                             'mod':QuadraticDiscriminantAnalysis(),
+    #                             'par':{
+    #                                 'reg_param':[0,0.3,0.5,0.7,0.9]
+    #                             }
                          
-                    },
-                    'nn':{
-                                'mod' : MLPClassifier( solver = 'adam',shuffle = True, random_state= 42),
-                                'par':{
-                                    'hidden_layer_sizes' : layers_nn,
-                                    'activation' : ('logistic', 'relu','tanh','identity'),
-                                    'learning_rate_init': [0.001,0.01,0.1,0.3,0.5,0.9],
-                                    'alpha':[0.05, 0.1, 0.5 , 3, 5, 10, 20]
-                                    }
+    #                 },
+    #                 'nn':{
+    #                             'mod' : MLPClassifier( solver = 'adam',shuffle = True, random_state= 42),
+    #                             'par':{
+    #                                 'hidden_layer_sizes' : layers_nn,
+    #                                 'activation' : ('logistic', 'relu','tanh','identity'),
+    #                                 'learning_rate_init': [0.001,0.01,0.1,0.3,0.5,0.9],
+    #                                 'alpha':[0.05, 0.1, 0.5 , 3, 5, 10, 20]
+    #                                 }
                          
-                   },
-                   'rforest':{
-                             'mod': RandomForestClassifier(random_state= 42),
-                             'par': {'n_estimators':[10,20,30,40,50,60,70,80,90,100,200,300,400,500],
-                                     'max_depth': [None, 2, 4, 6, 8, 10, 20, 30],
-                                     'criterion':('gini','entropy'),
-                                     'bootstrap': [True,False]
-                                     }
-                   },
-                   'xtree':{
-                             'mod': ExtraTreesClassifier(random_state = 42),
-                             'par': {'n_estimators':[10,20,30,40,50,60,70,80,90,100,200,300,400,500],
-                                     'max_depth':[None, 2, 4, 6, 8, 10, 20, 30],
-                                     'criterion':('gini','entropy'),
-                                     'bootstrap': [True,False]}                     
-                   },
-                   'gradient':{
-                               'mod' : GradientBoostingClassifier(random_state = 42),
-                               'par' : {'loss' : ('deviance', 'exponential'),
-                                       'n_estimators': [10,20,30,40,50,60,70,80,90,100,200,300,400,500],
-                                       'max_depth' : [3, 4, 5, 6, 7, 8, 9],
-                                       'learning_rate':[0.1,0.3,0.5,0.7,0.9]
-                                       }
-                   },
-                   'xgboost':{
-                           'mod':XGBClassifier(random_state = 42),
-                           'par':{
-                                 'n_estimators':[10,20,30,40,50,60,70,80,90,100,200,300,400,500],
-                                 'max_depth': [ 2, 4, 6, 8, 10, 20, 30]
-                               }
+    #                },
+    #                'rforest':{
+    #                          'mod': RandomForestClassifier(random_state= 42),
+    #                          'par': {'n_estimators':[10,20,30,40,50,60,70,80,90,100,200,300,400,500],
+    #                                  'max_depth': [None, 2, 4, 6, 8, 10, 20, 30],
+    #                                  'criterion':('gini','entropy'),
+    #                                  'bootstrap': [True,False]
+    #                                  }
+    #                },
+    #                'xtree':{
+    #                          'mod': ExtraTreesClassifier(random_state = 42),
+    #                          'par': {'n_estimators':[10,20,30,40,50,60,70,80,90,100,200,300,400,500],
+    #                                  'max_depth':[None, 2, 4, 6, 8, 10, 20, 30],
+    #                                  'criterion':('gini','entropy'),
+    #                                  'bootstrap': [True,False]}                     
+    #                },
+    #                'gradient':{
+    #                            'mod' : GradientBoostingClassifier(random_state = 42),
+    #                            'par' : {'loss' : ('deviance', 'exponential'),
+    #                                    'n_estimators': [10,20,30,40,50,60,70,80,90,100,200,300,400,500],
+    #                                    'max_depth' : [3, 4, 5, 6, 7, 8, 9],
+    #                                    'learning_rate':[0.1,0.3,0.5,0.7,0.9]
+    #                                    }
+    #                },
+    #                'xgboost':{
+    #                        'mod':XGBClassifier(random_state = 42),
+    #                        'par':{
+    #                              'n_estimators':[10,20,30,40,50,60,70,80,90,100,200,300,400,500],
+    #                              'max_depth': [ 2, 4, 6, 8, 10, 20, 30]
+    #                            }
+    #                        }
+    #           }
+    
+    models = {
+                  'xgboost':{
+                           'mod':XGBClassifier(random_state = 42,n_estimators =100,max_depth=4 ),
+                           'par':{ }
                            }
               }
-    
-    # models = {
-    #               'logistic':{
-    #                           'mod':LogisticRegression(random_state = 42),
-    #                           'par':{
-    #                               'penalty': ('l1','l2'),
-    #                               'solver': ('saga','lbfgs')
-                                 
-    #                           }
-    #               }
-    #           }
     
     mod.models = models
     
@@ -203,15 +201,15 @@ def main(d_ini, d_fin):
     d_ini_acc = d_ini - dt.timedelta(hours = int(freq2.replace('H', '')))
     raw_accidentes = funciones.read_accidentes(d_ini_acc, d_fin)
     
-    # ### Agrega senal a corto plazo
-    # data_org = funciones.obtener_accidentes_acumulados(data_org, 
-    #                                                     raw_accidentes, 
-    #                                                     freq = freq1)
+    ### Agrega senal a corto plazo
+    data_org = funciones.obtener_accidentes_acumulados(data_org, 
+                                                        raw_accidentes, 
+                                                        freq = freq1)
     
-    # ### Agrega senal a largo plazo
-    # data_org = funciones.obtener_accidentes_acumulados(data_org, 
-    #                                                     raw_accidentes, 
-    #                                                     freq = freq2)
+    ### Agrega senal a largo plazo
+    data_org = funciones.obtener_accidentes_acumulados(data_org, 
+                                                        raw_accidentes, 
+                                                        freq = freq2)
     
     data_org['poblado'] = data_org['BARRIO']
     data_org= pd.get_dummies(data_org, columns=['poblado'])
@@ -224,7 +222,7 @@ def main(d_ini, d_fin):
     vars_ele = ['precipIntensity',
                 'precipProbability', 'temperature', 'apparentTemperature', 'dewPoint',
                 'humidity', 'windSpeed', 'cloudCover',  
-                'uvIndex', 'visibility', 'poblado_alejandria',# f'cumAcc_{freq1}',f'cumAcc_{freq2}', 
+                'uvIndex', 'visibility', 'poblado_alejandria', f'cumAcc_{freq1}',f'cumAcc_{freq2}', 
                 'poblado_altosdelpoblado', 'poblado_astorga', 'poblado_castropol', 
                 'poblado_elcastillo', 'poblado_eldiamanteno2', 
                 'poblado_laaguacatala', 'poblado_lalinde', 'poblado_losbalsosno1', 

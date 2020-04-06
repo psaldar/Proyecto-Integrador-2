@@ -40,7 +40,7 @@ logging.basicConfig(level=logging.DEBUG,
 #%%
 def main(d_ini, d_fin):
     
-    version = 'ver010'    
+    version = 'ver010p2'    
     mod_version = funciones.carga_model(base_path, f'models/{version}', version)
     
     if 'model' in mod_version:
