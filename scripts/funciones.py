@@ -19,6 +19,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.metrics import confusion_matrix
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV
 #%%
 import logging
 
@@ -237,7 +238,7 @@ def obtener_accidentes_acumulados(data, raw_accidentes, freq = '10H'):
 #el conjunto de datos para entrenar, y devuelve el mejor modelo entrenado
 #dado el score determinado.
 def grid(base_path, now_date, path_file, os_X_tt, os_Y_tt, models, 
-         score = 'roc_auc', cv = 3, n_proc = 2):    
+         score = 'roc_auc', cv = 3, n_proc = 2, random = False, n_iter = 20):    
     
     for name in models:
        logger.info('*'*80)
@@ -249,10 +250,18 @@ def grid(base_path, now_date, path_file, os_X_tt, os_Y_tt, models,
        for par in models[name]['par']:
              aux = name + '__' +  par
              parameters[aux] = models[name]['par'][par]
-             
-       aux = GridSearchCV(pipeline, parameters, n_jobs = n_proc,\
-                          scoring = ['roc_auc','balanced_accuracy','f1'], 
-                          verbose=2, cv = cv,refit = score)
+       
+       if random:
+           
+           aux = RandomizedSearchCV(pipeline, parameters, n_jobs = n_proc,\
+                              scoring = ['roc_auc','balanced_accuracy','f1'], 
+                              verbose=2, cv = cv,refit = score, n_iter = n_iter)
+           
+       else:
+           
+           aux = GridSearchCV(pipeline, parameters, n_jobs = n_proc,\
+                              scoring = ['roc_auc','balanced_accuracy','f1'], 
+                              verbose=2, cv = cv,refit = score)
            
        aux.fit(os_X_tt, os_Y_tt)
        models[name]['bestModel'] = aux.best_estimator_

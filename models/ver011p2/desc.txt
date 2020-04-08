@@ -1,0 +1,5 @@
+DESCRIPCION:
+Entrena modelo considerando todo el diccionario de modelos,
+ademas incluye todas las variables relevantes relacionadas al dia de la semana,
+hora y todas las variables climaticas ademas de aquellas con su mean relevante y la informacion de los barrios.
+Incluye senal de accidentes en las ultimas 2 semanas y 4 dias

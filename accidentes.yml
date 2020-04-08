@@ -16,6 +16,7 @@ dependencies:
  - python-graphviz
  - py-xgboost
  - mlxtend
+ - netCDF4
  - pip
  - pip:
    - pyod
