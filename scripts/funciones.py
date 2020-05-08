@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 ### Asignar hora del dia para cada accidente (solo el entero de la hora)
 def extraehora(HORA):
-    if 'p. m.' in HORA:
+    if ('p. m.'  in HORA) or ('PM'  in HORA):
         if '12:' not in HORA:
             hora = int(HORA.split(':')[0]) + 12
         else:
@@ -237,7 +237,7 @@ def obtener_accidentes_acumulados(data, raw_accidentes, freq = '10H'):
 #En la funcion grid, se considera un diccionario de modelos para ser entrenado,
 #el conjunto de datos para entrenar, y devuelve el mejor modelo entrenado
 #dado el score determinado.
-def grid(base_path, now_date, path_file, os_X_tt, os_Y_tt, models, 
+def grid(base_path, now_date, path_file, os_X_tt, os_Y_tt,X_test,Y_test, models, 
          score = 'roc_auc', cv = 3, n_proc = 2, random = False, n_iter = 20):    
     
     for name in models:
@@ -264,13 +264,21 @@ def grid(base_path, now_date, path_file, os_X_tt, os_Y_tt, models,
                               verbose=2, cv = cv,refit = score)
            
        aux.fit(os_X_tt, os_Y_tt)
+       
+       
+       preds = aux.predict(X_test)
+       proba = aux.predict_proba(X_test)
+       
+       
        models[name]['bestModel'] = aux.best_estimator_
-       models[name]['mae'] = aux.best_score_
+       models[name]['mae'] = metrics.roc_auc_score(Y_test, proba[:,1])#aux.best_score_
        
-       res = pd.DataFrame(aux.cv_results_)  
+       #res = pd.DataFrame(aux.cv_results_)  
        
-       bAccuracy = res[res['params']==aux.best_params_]['mean_test_balanced_accuracy'].values[0]
-       fScore = res[res['params']==aux.best_params_]['mean_test_f1'].values[0]
+       bAccuracy = metrics.balanced_accuracy_score(Y_test,preds) #res[res['params']==aux.best_params_]['mean_test_balanced_accuracy'].values[0]
+       fScore = metrics.f1_score(Y_test,preds) #res[res['params']==aux.best_params_]['mean_test_f1'].values[0]
+       precision = metrics.precision_score(Y_test,preds)
+       recall = metrics.recall_score(Y_test,preds)
        
        selection_time = time.time() - t_beg
        
@@ -285,6 +293,8 @@ def grid(base_path, now_date, path_file, os_X_tt, os_Y_tt, models,
        logger.info(f"El {score} de la familia {name} es: {models[name]['mae']:0.3f}")
        logger.info(f"El b_accuracy de la familia {name} es: {bAccuracy:0.3f}")
        logger.info(f"El fscore de la familia {name} es: {fScore:0.3f}")
+       logger.info(f"La precision de la familia {name} es: {precision:0.3f}")
+       logger.info(f"El recall de la familia {name} es: {recall:0.3f}")
        logger.info('*'*80)
        
     mod_name = None

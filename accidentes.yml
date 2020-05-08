@@ -15,11 +15,11 @@ dependencies:
  - imbalanced-learn
  - python-graphviz
  - py-xgboost
- - mlxtend
  - netCDF4
  - pip
  - pip:
    - pyod
+   - mlxtend
    - pydotplus
    - graphviz
    - gmplot

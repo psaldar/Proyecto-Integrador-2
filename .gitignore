@@ -2,6 +2,7 @@
 
 # Ipython notebook checkpoints
 .ipynb_checkpoints/*
+notebooks/.ipynb_checkpoints/*
 
 # Byte-compiled / optimized / DLL files:
 /__pycache__/*
@@ -32,5 +33,8 @@ data/info_2019.csv
 data/Accidentalidad_georreferenciada_*.csv
 data/info_poblado2019.csv
 data/info_poblado_all.csv
+data/train.csv
+data/validation.csv
+data/test.csv
 
 scripts/iRain/f1/*

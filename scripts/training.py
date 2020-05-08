@@ -61,11 +61,11 @@ from scripts.clase_model.modelo import Modelo
 
 def main(d_ini, d_fin):
     
-    version = 'ver011p2'
+    version = 'ver012NN'
     now_date = dt.datetime.now()
     
     cv = 3
-    freq1 = '108H'
+    freq1 = '96H'
     freq2 = '336H'
     balance = 'rus'
     score = 'roc_auc'
@@ -87,8 +87,8 @@ def main(d_ini, d_fin):
     
     layers_nn = []
 
-    layer_lim_max = 7
-    layer_lim_min = 4
+    layer_lim_max = 5
+    layer_lim_min = 2
  
     nodes_lim_max = 128
     nodes_lim_min = 6
@@ -102,43 +102,58 @@ def main(d_ini, d_fin):
           
     layers_nn = list(set(layers_nn))
     
-    models = {
-                    'logistic':{
-                                'mod':LogisticRegression(random_state = 42),
-                                'par':{
-                                    'penalty': ('l1','l2'),
-                                    'solver': ('saga','lbfgs')
+    # models = {
+    #                 'logistic':{
+    #                             'mod':LogisticRegression(random_state = 42),
+    #                             'par':{
+    #                                 'penalty': ('l1','l2'),
+    #                                 'solver': ('saga','lbfgs')
                                  
-                                }
-                    },
-                    'ridge_log':{
-                                'mod':RidgeClassifier(random_state = 42),
-                                'par':{
-                                    'alpha':[0.2, 0.4, 0.6, 0.8, 1],
-                                    'solver': ('auto', 'svd', 'cholesky', 'lsqr', 'sparse_cg', 'sag', 'saga')
-                                }
+    #                             }                         
+    #                 },
+    #                 'nn':{
+    #                             'mod' : MLPClassifier( solver = 'adam',shuffle = True, random_state= 42),
+    #                             'par':{
+    #                                 'hidden_layer_sizes' : layers_nn,
+    #                                 'activation' : ('logistic', 'relu','tanh','identity'),
+    #                                 'learning_rate_init': [0.001,0.01,0.1,0.3,0.5,0.9],
+    #                                 'alpha':[0.05, 0.1, 0.5 , 3, 5, 10, 20]
+    #                                 }
                          
-                    },
-                    'naiveBayes':{
-                                'mod':GaussianNB(),
-                                'par':{}
-                         
-                    },
-                    'bernoulli':{
-                                'mod':BernoulliNB(),
-                                'par':{
-                                    'fit_prior':[True, False],
-                                    'alpha': [0,0.2,0.4,0.6,0.8,1]
-                                }
-                         
-                    },
-                    'qda':{
-                                'mod':QuadraticDiscriminantAnalysis(),
-                                'par':{
-                                    'reg_param':[0,0.3,0.5,0.7,0.9]
-                                }
-                         
-                    },
+    #                 },
+    #                 'rforest':{
+    #                           'mod': RandomForestClassifier(random_state= 42),
+    #                           'par': {'n_estimators':[10,20,30,40,50,60,70,80,90,100,200,300,400,500],
+    #                                   'max_depth': [None, 2, 4, 6, 8, 10, 20, 30],
+    #                                   'criterion':('gini','entropy'),
+    #                                   'bootstrap': [True,False]
+    #                                   }
+    #                 },
+    #                 'xtree':{
+    #                           'mod': ExtraTreesClassifier(random_state = 42),
+    #                           'par': {'n_estimators':[10,20,30,40,50,60,70,80,90,100,200,300,400,500],
+    #                                   'max_depth':[None, 2, 4, 6, 8, 10, 20, 30],
+    #                                   'criterion':('gini','entropy'),
+    #                                   'bootstrap': [True,False]}                     
+    #                 },
+    #                 'gradient':{
+    #                             'mod' : GradientBoostingClassifier(random_state = 42),
+    #                             'par' : {'loss' : ('deviance', 'exponential'),
+    #                                     'n_estimators': [10,20,30,40,50,60,70,80,90,100,200,300,400,500],
+    #                                     'max_depth' : [3, 4, 5, 6, 7, 8, 9],
+    #                                     'learning_rate':[0.1,0.3,0.5,0.7,0.9]
+    #                                     }
+    #                 },
+    #                 'xgboost':{
+    #                         'mod':XGBClassifier(random_state = 42),
+    #                         'par':{
+    #                               'n_estimators':[10,20,30,40,50,60,70,80,90,100,200,300,400,500],
+    #                               'max_depth': [ 2, 4, 6, 8, 10, 20, 30]
+    #                             }
+    #                         }
+    #           }
+    
+    models = {
                     'nn':{
                                 'mod' : MLPClassifier( solver = 'adam',shuffle = True, random_state= 42),
                                 'par':{
@@ -147,46 +162,8 @@ def main(d_ini, d_fin):
                                     'learning_rate_init': [0.001,0.01,0.1,0.3,0.5,0.9],
                                     'alpha':[0.05, 0.1, 0.5 , 3, 5, 10, 20]
                                     }
-                         
-                    },
-                    'rforest':{
-                              'mod': RandomForestClassifier(random_state= 42),
-                              'par': {'n_estimators':[10,20,30,40,50,60,70,80,90,100,200,300,400,500],
-                                      'max_depth': [None, 2, 4, 6, 8, 10, 20, 30],
-                                      'criterion':('gini','entropy'),
-                                      'bootstrap': [True,False]
-                                      }
-                    },
-                    'xtree':{
-                              'mod': ExtraTreesClassifier(random_state = 42),
-                              'par': {'n_estimators':[10,20,30,40,50,60,70,80,90,100,200,300,400,500],
-                                      'max_depth':[None, 2, 4, 6, 8, 10, 20, 30],
-                                      'criterion':('gini','entropy'),
-                                      'bootstrap': [True,False]}                     
-                    },
-                    'gradient':{
-                                'mod' : GradientBoostingClassifier(random_state = 42),
-                                'par' : {'loss' : ('deviance', 'exponential'),
-                                        'n_estimators': [10,20,30,40,50,60,70,80,90,100,200,300,400,500],
-                                        'max_depth' : [3, 4, 5, 6, 7, 8, 9],
-                                        'learning_rate':[0.1,0.3,0.5,0.7,0.9]
-                                        }
-                    },
-                    'xgboost':{
-                            'mod':XGBClassifier(random_state = 42),
-                            'par':{
-                                  'n_estimators':[10,20,30,40,50,60,70,80,90,100,200,300,400,500],
-                                  'max_depth': [ 2, 4, 6, 8, 10, 20, 30]
-                                }
                             }
               }
-    
-    # models = {
-    #               'xgboost':{
-    #                        'mod':XGBClassifier(random_state = 42,n_estimators =100,max_depth=4 ),
-    #                        'par':{ }
-    #                        }
-    #           }
     
     mod.models = models
     
@@ -295,6 +272,6 @@ def main(d_ini, d_fin):
 
 if __name__ == '__main__':
     
-    d_ini = dt.datetime(2018,8,3)
+    d_ini = dt.datetime(2017,6,1)
     d_fin = dt.datetime(2019,8,1)    
     main(d_ini, d_fin)

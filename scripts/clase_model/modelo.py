@@ -104,7 +104,7 @@ class Modelo:
         # se consideran en el diciconario de modelos
         most_date = dt.datetime.now()
         models, selected = funciones.grid(self.base_path, most_date, self.path_version,
-                                          os_X_tt, os_Y_tt, self.models, 
+                                          os_X_tt, os_Y_tt,X_test,Y_test, self.models, 
                                           score = score, cv = cv, n_proc = n_proc)
         
         # Asigna al objeto el mejor modelo, ademas de establecer el orden en el
