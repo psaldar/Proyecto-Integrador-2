@@ -4,12 +4,15 @@ Created on Tue Mar 31 20:44:24 2020
 
 @author: Pablo Saldarriaga
 """
+### Ese script consolida la informacion climatica para el poblado en los years
+### 2017, 2018 y 2019 en un solo sqlite
 import os
 import json
 import sqlite3
 import pandas as pd
-import datetime as dt
 #%%
+### Realizamos el cambio de directoroi de trabajo al "Directorio Base" que se
+### encuentra en el archivo conf.json
 current_dir = os.getcwd()
 
 file_name = 'conf.json'

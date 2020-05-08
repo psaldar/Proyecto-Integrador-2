@@ -4,14 +4,17 @@ Created on Sun Feb 16 15:09:18 2020
 
 @author: Pablo Saldarriaga
 """
+### Este script realiza la consulta de la informacion climatica utilizando
+### el API de Darksky. Guarda la informacion en un sqlite
 import os
 import json
 import sqlite3
 import pandas as pd
 import datetime as dt
 #%%
+### Realizamos el cambio de directoroi de trabajo al "Directorio Base" que se
+### encuentra en el archivo conf.json
 current_dir = os.getcwd()
-
 
 file_name = 'conf.json'
 path = os.path.join(current_dir, f'{file_name}')

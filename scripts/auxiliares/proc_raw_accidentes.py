@@ -10,6 +10,8 @@ import sqlite3
 import pandas as pd
 import datetime as dt
 #%%
+### Realizamos el cambio de directoroi de trabajo al "Directorio Base" que se
+### encuentra en el archivo conf.json
 current_dir = os.getcwd()
 
 file_name = 'conf.json'
@@ -20,6 +22,7 @@ with open(path, 'r') as f:
 base_path = info_conf['base_path']
 os.chdir(base_path)
 #%%
+### importamos las funciones que se utilizan para el desarrollo del proyecto
 import scripts.funciones as funciones
 #%% Importacion de los datos
 
@@ -78,6 +81,8 @@ for barrio in barrios:
         
     barrios_limpios.append(barrio)
 
+### agrego los nombres de los barrios procesados, al igual que organizar la
+### fecha del accidente
 datos['BARRIO'] =  barrios_limpios
 datos['FECHA'] = datos['FECHA'].apply(lambda x: pd.to_datetime(x).strftime('%Y-%m-%d'))
 datos['Hora_num'] = datos['HORA'].apply(funciones.extraehora)

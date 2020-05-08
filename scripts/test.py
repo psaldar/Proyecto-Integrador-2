@@ -9,8 +9,11 @@ import sys
 import json
 import pandas as pd
 import datetime as dt
-current_dir = os.getcwd()
 #%%
+### Realizamos el cambio de directoroi de trabajo al "Directorio Base" que se
+### encuentra en el archivo conf.json
+current_dir = os.getcwd()
+
 file_name = 'conf.json'
 path = os.path.join(current_dir, f'{file_name}')
 with open(path, 'r') as f:
@@ -22,6 +25,7 @@ sys.path.insert(0, base_path)
 #%%
 import scripts.funciones as funciones
 #%%
+#Define el archivo en el que se guararan los logs del codigo
 import logging
 from logging.handlers import RotatingFileHandler
 
@@ -40,6 +44,9 @@ logging.basicConfig(level=logging.DEBUG,
 #%%
 def main(d_ini, d_fin):
     
+    ### Realizamos la carga del modelo entrenado con el script training.py,
+    ### importamos tanto el mejor modelo como el objeto de clase modelo 
+    ### utilizado durante el entrenamiento
     version = 'ver012NN'    
     mod_version = funciones.carga_model(base_path, f'models/{version}', version)
     
@@ -51,6 +58,11 @@ def main(d_ini, d_fin):
         logger.error("No model found")
         return None
     
+    ### Realizamos la lectura de la informacion climatica en el rango de fechas
+    ### especificado, incluye la etiqueta de si ocurre o no un accidente. 
+    ### Posteriormente, en la organizacion de la informacion climatica, lo
+    ### que se hace es agregar las variables con la informacion distribucional
+    ### de las ultimas 5 horas de la info climatica    
     data = funciones.read_clima_accidentes(d_ini, d_fin, poblado = True)
     data_org = funciones.organizar_data_infoClima(data)
     
@@ -67,6 +79,8 @@ def main(d_ini, d_fin):
         freq1 = '1H'
         freq2 = '1H'
     
+    ### agregamos la informacion relacionada a la cantidad de accidentes ocurridas
+    ### en las ultimas X horas    
     d_ini_acc = d_ini - dt.timedelta(hours = int(freq2.replace('H', '')))
     raw_accidentes = funciones.read_accidentes(d_ini_acc, d_fin)
     
@@ -79,17 +93,25 @@ def main(d_ini, d_fin):
     data_org = funciones.obtener_accidentes_acumulados(data_org, 
                                                         raw_accidentes, 
                                                         freq = freq2)
-    
+
+    ### Convertimos la bariable de Barrios en variable dummy para ser incluida
+    ### en el modelo    
     data_org['poblado'] = data_org['BARRIO']
     data_org= pd.get_dummies(data_org, columns=['poblado'])
     
+    ### Relizamos la particion del conjunto de datos en las variables
+    ### explicativas (X) y la variable respuesta (Y)    
     X = data_org.drop(columns = ['TW','BARRIO','Accidente','summary'])
     Y = data_org['Accidente']
-
+    
+    ### El modelo realiza la prediccion con el conjunto de datos, para esto los
+    ### parametros de la funcion son el conjunto de datos, y el modelo que 
+    ### se quiere utilizar
     preds_ff = mod.predict(X, model_sel)
     preds_ff['Accidente'] = Y
     
-    #graph the results
+    ### Realizamos las gracias de violines, roc y precision-recall en el conjunto
+    ### de datos de prueba
     funciones.graphs_evaluation_test(f'{base_path}/models/{version}',  preds_ff, save = True)
     funciones.precision_recall_graph_test(f'{base_path}/models/{version}',  preds_ff, save = True)
     
@@ -101,6 +123,8 @@ def main(d_ini, d_fin):
 
 if __name__ == '__main__':
     
+    ### Definimos el rango de fechas en el cual realizaremos la prediccion de
+    ### accidentalidad con el modelo entrenado
     d_ini = dt.datetime(2019,8,1)
     d_fin = dt.datetime(2020,1,1)    
     main(d_ini, d_fin)

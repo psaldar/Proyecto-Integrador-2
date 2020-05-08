@@ -12,7 +12,6 @@ import pandas as pd
 import datetime as dt
 import seaborn as sns
 import matplotlib.pyplot as plt
-
 import sklearn.metrics as metrics
 from sklearn.externals import joblib
 from sklearn.pipeline import Pipeline
@@ -22,10 +21,8 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RandomizedSearchCV
 #%%
 import logging
-
 logger = logging.getLogger(__name__)
 #%%
-
 ### Asignar hora del dia para cada accidente (solo el entero de la hora)
 def extraehora(HORA):
     if ('p. m.'  in HORA) or ('PM'  in HORA):
@@ -41,20 +38,8 @@ def extraehora(HORA):
         
     return hora
 
-def extraehora2(HORA):
-    if 'PM' in HORA:
-        if '12:' not in HORA:
-            hora = int(HORA[:2]) + 12
-        else:
-            hora = int(HORA[:2])
-    else:
-        if '12:' not in HORA:
-            hora = int(HORA[:2])
-        else:
-            hora = 0
-        
-    return hora
-
+### Devuelve el nombre del mes segun el numero de mes que se pase como 
+### argumento a la funcion
 def obtener_mes(x):
     
     if x == 1:
@@ -82,18 +67,24 @@ def obtener_mes(x):
     elif x== 12:
         return 'Diciembre'
     
-    
+### Esta funcion realiza la conexion y ejecucion de un query en un archivo
+### sqlite. Los parametros son la ruta o directorio del archivo y el query
+### a ser ejecutado
 def read_sqlite(db_path, query):
     
     try:
         conn = sqlite3.connect(db_path)
         df = pd.read_sql_query(query,conn)
     except Exception as e:
-        print(f'Error leyendo el archivo {db_path}: {e}')
+        logger.info(f'Error leyendo el archivo {db_path}: {e}')
         return None
     
     return df
-    
+
+### Esta funcion realiza la lectura de los accidentes "crudos" a ser considerados
+### cada registro corresponde a un accidente, y tiene informacion de su 
+### ubicacion, gravedad, barrio, fecha, hora, etc. Retorna la informacion de 
+### los accidentes en un rango de fechas especifico    
 def read_accidentes(d_ini, d_fin):
     
     db_name = 'database_pi2.sqlite3'
@@ -110,7 +101,12 @@ def read_accidentes(d_ini, d_fin):
     
     return accidentes
 
-
+### Esta funcion realiza la lectura de la informacion climatica consultada
+### en darksky, a esta informacion (la cual tiene informacion de para cada
+### barrio y para cada hora) le agrega la etiqueta 1 o 0 refiriendose asi
+### si se tuvo o no un accidente en ese barrio a esa hora. Los parametros de 
+### la funcion nos indican el rango de fechas en el cual se va a leer la info
+### ademas de filtrar o no la info que solo esta en aquellos barrios del Poblado 
 def read_clima_accidentes(d_ini, d_fin, poblado = False):
     
     db_name = 'database_pi2.sqlite3'
@@ -173,14 +169,20 @@ def read_clima_accidentes(d_ini, d_fin, poblado = False):
                                   how = 'left', on = ['TW','BARRIO'])
     
     data_accidentes['Accidente'] = data_accidentes['Accidente'].fillna(0)
+    
+    ### Mantenemos los registros que tengan informacion en la variable icon
     data_accidentes = data_accidentes[~data_accidentes['icon'].isna()].reset_index(drop = True)
     
-    
+    ### dentro del proceso de preparacion de datos, se determina que no se 
+    ### utilizara la variable windbearing en el modelo, ya que esta falta
+    ### en una cantidad considerable de registros
     data_accidentes = data_accidentes.drop(columns = ['windBearing'])
     
     return data_accidentes
 
-
+### Esta funcion agrega a las variables climaticas informacion a cerca del
+### promedio de dichas variables para cada barrio en las ultimas 5 horas, asi
+### estamos incluyendo informacion sobre la distribucion de la info climatica
 def organizar_data_infoClima(data):
 
     data['hora'] = data['TW'].dt.hour
@@ -245,12 +247,18 @@ def grid(base_path, now_date, path_file, os_X_tt, os_Y_tt,X_test,Y_test, models,
        logger.info("Model: " + name)
        t_beg = time.time()
        
+       ### Crea el Pipeline de forma tal que primero se realice la estandarizacion
+       ### del conjunto de datos y posteriormente la evaluacion del modelo de ML
        pipeline = Pipeline([('scaler', StandardScaler()), (name,  models[name]['mod'])])
        parameters = {}          
+       
+       ### organiza los parametros para ser pasados a la busqueda Grid o Random
        for par in models[name]['par']:
              aux = name + '__' +  par
              parameters[aux] = models[name]['par'][par]
        
+        ### Se realiza el entrenamiento ya sea utilizando la estrategia de
+        ### Random Search o de Grid Searcj
        if random:
            
            aux = RandomizedSearchCV(pipeline, parameters, n_jobs = n_proc,\
@@ -265,7 +273,7 @@ def grid(base_path, now_date, path_file, os_X_tt, os_Y_tt,X_test,Y_test, models,
            
        aux.fit(os_X_tt, os_Y_tt)
        
-       
+       ### Evalua el mejor modelo obtenido en el conjunto de validacion
        preds = aux.predict(X_test)
        proba = aux.predict_proba(X_test)
        
@@ -273,10 +281,9 @@ def grid(base_path, now_date, path_file, os_X_tt, os_Y_tt,X_test,Y_test, models,
        models[name]['bestModel'] = aux.best_estimator_
        models[name]['mae'] = metrics.roc_auc_score(Y_test, proba[:,1])#aux.best_score_
        
-       #res = pd.DataFrame(aux.cv_results_)  
-       
-       bAccuracy = metrics.balanced_accuracy_score(Y_test,preds) #res[res['params']==aux.best_params_]['mean_test_balanced_accuracy'].values[0]
-       fScore = metrics.f1_score(Y_test,preds) #res[res['params']==aux.best_params_]['mean_test_f1'].values[0]
+       ### realizamos el calculo de las metricas en el conjunto de validacion
+       bAccuracy = metrics.balanced_accuracy_score(Y_test,preds) 
+       fScore = metrics.f1_score(Y_test,preds) 
        precision = metrics.precision_score(Y_test,preds)
        recall = metrics.recall_score(Y_test,preds)
        
@@ -286,9 +293,13 @@ def grid(base_path, now_date, path_file, os_X_tt, os_Y_tt,X_test,Y_test, models,
        
        sample_f_path = os.path.join(base_path, path_file, f'{name}_{now_date.strftime("%Y%m%d_%H%M")}.sav')
        
+       ### Guardamos el mejor modelo obtenido para cada una de las familias de
+       ### modelos considerados
        logger.info(f"Saving model at {sample_f_path}")    
        joblib.dump(models[name]['bestModel'], sample_f_path)
        
+       ### Escribe en el archivo de log las metricas obtenidas en el conjunto
+       ### de validacion
        logger.info(f"El tiempo de seleccion fue: {selection_time:0.3f} s")
        logger.info(f"El {score} de la familia {name} es: {models[name]['mae']:0.3f}")
        logger.info(f"El b_accuracy de la familia {name} es: {bAccuracy:0.3f}")
@@ -296,7 +307,8 @@ def grid(base_path, now_date, path_file, os_X_tt, os_Y_tt,X_test,Y_test, models,
        logger.info(f"La precision de la familia {name} es: {precision:0.3f}")
        logger.info(f"El recall de la familia {name} es: {recall:0.3f}")
        logger.info('*'*80)
-       
+   
+    ### Obtiene el mejor modelo en base al ROC-AUC
     mod_name = None
     best_mae = -np.inf
     for name in models:
@@ -308,6 +320,9 @@ def grid(base_path, now_date, path_file, os_X_tt, os_Y_tt,X_test,Y_test, models,
     
     return models, mod_name
 
+### Las siguientes funciones, crean los graficos de la curva ROC y precision-recall
+### tanto para el conjunto de entrenamiento como el conjunto de prueba. Estas
+### funciones giardan los graficos en PDF
 def graphs_evaluation(base_path, selected, ev_data, save = False):
     
     cols_plot = ['Accidente', 'Predicted']
@@ -492,6 +507,9 @@ def precision_recall_graph_test(base_path, ev_data, save = False):
     
     return None
 
+### Las siguientes dos funciones crean la matriz de confusion tanto para el
+### conjunto de validacion como de prueba, ademas de guardar las matrices de
+### confusion en un archivo PDF
 def matrix_confusion(base_path, selected, ev_data, bound,save = False):
     
     cols_plot = ['Accidente', 'Predicted']
@@ -540,6 +558,8 @@ def matrix_confusion_test(base_path, ev_data, bound,save = False):
     
     return None
 
+### Esta funcion carga tanto el archivo guardado que incluye tanto el objeto
+### de clases modelo como el modelo entrenado
 def carga_model(base_path, path_savs, sav_name):
     ext = 'sav'
     f_name = f"{sav_name}.{ext}"
@@ -561,13 +581,13 @@ def carga_model(base_path, path_savs, sav_name):
        
     return samples
 
+### Rsta funcion carga en memoria un modelo .sav entrenado, es solo el modelo
+### no incluye el objeto de clases modelo
 def carga_model_ind(base_path, path_savs, sav_name):
     ext = 'sav'
     f_name = f"{sav_name}.{ext}"
     
     f_path = os.path.join(base_path, path_savs, f_name)
-    
-    samples = {'path' : f_path}
     
     try:
         if not os.path.isfile(f_path):
