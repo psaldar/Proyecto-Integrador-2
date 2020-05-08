@@ -1,12 +1,12 @@
-Analisis de la accidentalidad en la ciudad de medellin
+Predicción de Accidentes Vehiculares en el Poblado
 =======================================================================================
 
 
 ## Description
 
- Este repositorio contiene la informacionrequerida para reproducir el trabajo de "Analisis de la accidentalidad en la ciudad de Medellin"
+Este repositorio contiene la informacionrequerida para reproducir el trabajo de "Predicción de Accidentes Vehiculares en el Poblado"
 
-#### "Analisis de la accidentalidad en la ciudad de medellin"
+### "Predicción de Accidentes Vehiculares en el Poblado"
 
 Pablo A. Saldarriga<sup>1</sup>, Nicolás Prieto<sup>1</sup>
 
@@ -54,6 +54,6 @@ Realizar un estudio general de la accidentalidad en la ciudad de Medellín, comb
 
 - Realizar un análisis descriptivo de la información de accidentalidad de la ciudad de Medellín considerando enfoques de datos funcionales y técnicas de análisis no supervisado.
 
-- Implementar y evaluar diferentes técnicas de aprendizaje automático y métodos estadísticos avanzados para la obtención de un modelo que presente un buen desempeño al momento de predecir la accidentalidad para los barrios de la comuna 14 - ``El Poblado'' de la ciudad de Medellín.
+- Implementar y evaluar diferentes técnicas de aprendizaje automático y métodos estadísticos avanzados para la obtención de un modelo que presente un buen desempeño al momento de predecir la accidentalidad para los barrios de la comuna 14 - ''El Poblado'' de la ciudad de Medellín.
     
 - Utilizar técnicas de visualización adecuadas para la presentación de resultados de los distintos análisis de este trabajo, además de mostrar las ventajas que se tendrían al usar el modelo de predicción de accidentes para la asignación de agentes de tránsito o abogados de aseguradoras.
