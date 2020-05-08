@@ -3,24 +3,24 @@ channels:
  - conda-forge
 dependencies:
  - python=3.7
- - numpy
- - pandas
+ - numpy==1.18.1
+ - pandas==1.0.3
  - mysqlclient
- - geopandas
- - seaborn
- - scikit-learn
- - sqlalchemy
- - spyder
- - jupyter
- - imbalanced-learn
+ - geopandas==0.7.0
+ - seaborn==0.10.0
+ - scikit-learn==0.22.2.post1
+ - sqlalchemy==1.3.15
+ - spyder==4.1.1
+ - jupyter==1.0.0
+ - imbalanced-learn==0.6.2
  - python-graphviz
- - py-xgboost
- - netCDF4
- - pip
+ - py-xgboost==0.90
+ - netCDF4==1.4.2
+ - pip==20.0.2
  - pip:
-   - pyod
-   - mlxtend
-   - pydotplus
-   - graphviz
-   - gmplot
-   - mysql-connector
+   - pyod==0.7.8
+   - mlxtend==0.17.2
+   - pydotplus==2.0.2
+   - graphviz==0.13.2
+   - gmplot==1.2.0
+   - mysql-connector==2.2.9
