@@ -7,6 +7,7 @@ Created on Mon Feb 17 17:05:55 2020
 import os
 import time
 import sqlite3
+import holidays
 import numpy as np
 import pandas as pd
 import datetime as dt
@@ -191,6 +192,17 @@ def organizar_data_infoClima(data):
     data= pd.get_dummies(data, columns=['hora'])
     data= pd.get_dummies(data, columns=['icon'])
     data= pd.get_dummies(data, columns=['dia_sem'])
+    
+    ## Festivos
+    col_holidays = holidays.CountryHoliday('CO')
+    es_hol = []
+    for i in data['TW']:
+        if i in col_holidays:
+            es_hol.append(1)
+        else:
+            es_hol.append(0)
+    data['festivo'] = es_hol
+    
     
     ### Feature augmentation
     freq = '5H'
