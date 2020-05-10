@@ -21,8 +21,6 @@ data/darksky_key.json
 # Bases de datos sqlite
 *.sqlite3
 
-# Modelos
-*.sav
 
 # Archivos irrelevantes
 *.json

@@ -116,56 +116,61 @@ print('Recall score: ' +str(recall_score(y_val, pred1)))
 
 
 
-############ Metodo 1: random undersampling
-from imblearn.under_sampling import RandomUnderSampler
-
-rus = RandomUnderSampler(sampling_strategy = 2/3, random_state = 42)
-X_rus, y_rus = rus.fit_sample(x_tra, y_tra)
-classifier1 = clone(classifier)
-classifier1.fit(X_rus, y_rus)
-pred1 = classifier1.predict(x_val)
-prob1 = classifier1.predict_proba(x_val)[:,1]
-print('\n\nRandom undersampling: ')
-print('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
-print('F1 score: ' +str(f1_score(y_val, pred1)))
-print('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
-print('Precission score: ' +str(precision_score(y_val, pred1)))
-print('Recall score: ' +str(recall_score(y_val, pred1)))
-
-
-
-
-############ Metodo 2: random oversampling
-from imblearn.over_sampling import RandomOverSampler
-
-ros = RandomOverSampler(sampling_strategy = 2/3, random_state = 42)
-X_rus, y_rus = ros.fit_sample(x_tra, y_tra)
-classifier2 = clone(classifier)
-classifier2.fit(X_rus, y_rus)
-pred1 = classifier2.predict(x_val)
-prob1 = classifier2.predict_proba(x_val)[:,1]
-print('\n\nRandom oversampling: ')
-print('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
-print('F1 score: ' +str(f1_score(y_val, pred1)))
-print('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
-print('Precission score: ' +str(precision_score(y_val, pred1)))
-print('Recall score: ' +str(recall_score(y_val, pred1)))
+#
+############# Metodo 2: random oversampling
+#from imblearn.over_sampling import RandomOverSampler
+#
+#ros = RandomOverSampler(sampling_strategy = 2/3, random_state = 42)
+#X_rus, y_rus = ros.fit_sample(x_tra, y_tra)
+#classifier2 = clone(classifier)
+#classifier2.fit(X_rus, y_rus)
+#pred1 = classifier2.predict(x_val)
+#prob1 = classifier2.predict_proba(x_val)[:,1]
+#print('\n\nRandom oversampling: ')
+#print('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
+#print('F1 score: ' +str(f1_score(y_val, pred1)))
+#print('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
+#print('Precission score: ' +str(precision_score(y_val, pred1)))
+#print('Recall score: ' +str(recall_score(y_val, pred1)))
 
 
 
 
 ############ Metodo 3: tomek link undersampling
-from imblearn.under_sampling import TomekLinks
+#from imblearn.under_sampling import TomekLinks
+#
+#rus = TomekLinks()
+#X_rus, y_rus = rus.fit_sample(x_tra, y_tra)
+#classifier3 = clone(classifier)
+#classifier3.fit(X_rus, y_rus)
+#pred1 = classifier1.predict(x_val)
+#prob1 = classifier1.predict_proba(x_val)[:,1]
+#print('\n\nRandom undersampling: ')
+#print('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
+#print('F1 score: ' +str(f1_score(y_val, pred1)))
+#print('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
+#print('Precission score: ' +str(precision_score(y_val, pred1)))
+#print('Recall score: ' +str(recall_score(y_val, pred1)))
 
-rus = TomekLinks()
-X_rus, y_rus = rus.fit_sample(x_tra, y_tra)
-classifier3 = clone(classifier)
-classifier3.fit(X_rus, y_rus)
+
+
+
+
+############ Metodo 4: random undersampling
+from imblearn.under_sampling import ClusterCentroids
+
+cus = ClusterCentroids(sampling_strategy = 2/3, random_state = 42)
+X_rus, y_rus = cus.fit_sample(x_tra, y_tra)
+classifier4 = clone(classifier)
+classifier4.fit(X_rus, y_rus)
 pred1 = classifier1.predict(x_val)
 prob1 = classifier1.predict_proba(x_val)[:,1]
-print('\n\nRandom undersampling: ')
+print('\n\nUndersampling cluster centroids: ')
 print('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
 print('F1 score: ' +str(f1_score(y_val, pred1)))
 print('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
 print('Precission score: ' +str(precision_score(y_val, pred1)))
 print('Recall score: ' +str(recall_score(y_val, pred1)))
+
+
+
