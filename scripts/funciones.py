@@ -214,7 +214,7 @@ def organizar_data_infoClima(data):
     data= pd.get_dummies(data, columns=['Year'])
     
     ### Feature augmentation
-    freq = '5H'
+    freq = '3H'
     variables = ['temperature','precipIntensity','apparentTemperature','dewPoint',
                  'humidity','windSpeed','cloudCover','visibility']
     
@@ -244,8 +244,8 @@ def organizar_data_infoClima(data):
     data_aux = data_aux.sort_index()
     data_aux = data_aux.drop(columns = 'TW')
     
-    data_pivot = data_aux.pivot_table(values=['precipIntensity'], index='TW',columns='BARRIO', aggfunc=sum)
-    data_precip = data_pivot.rolling(freq, closed = 'right').mean().stack().reset_index(drop = False)
+    data_pivot = data_aux.pivot_table(values=variables, index='TW',columns='BARRIO', aggfunc=sum)
+    data_precip = data_pivot.rolling('2H', closed = 'right').mean().stack().reset_index(drop = False)
     
     col_precip = [*data_precip.columns[:2]]
     for col in data_precip.columns[2:]:
