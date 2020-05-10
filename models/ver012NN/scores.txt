@@ -1,0 +1,11 @@
+2020-05-05 20:14:43,215 - 18120 - scripts.funciones - INFO - ********************************************************************************
+2020-05-05 20:14:43,215 - 18120 - scripts.funciones - INFO - Model: nn
+2020-05-05 21:08:09,798 - 18120 - scripts.funciones - INFO - Saving model at C:\Users\pasal\Google Drive\EAFIT\Ciencia de Datos y Analitica\02 Segundo Semestre\Proyecto Integrador\Proyecto-Integrador-2/models/ver012NN\nn_20200505_2014.sav
+2020-05-05 21:08:09,810 - 18120 - scripts.funciones - INFO - El tiempo de seleccion fue: 3206.583 s
+2020-05-05 21:08:09,810 - 18120 - scripts.funciones - INFO - El roc_auc de la familia nn es: 0.771
+2020-05-05 21:08:09,810 - 18120 - scripts.funciones - INFO - El b_accuracy de la familia nn es: 0.688
+2020-05-05 21:08:09,810 - 18120 - scripts.funciones - INFO - El fscore de la familia nn es: 0.091
+2020-05-05 21:08:09,811 - 18120 - scripts.funciones - INFO - La precision de la familia nn es: 0.049
+2020-05-05 21:08:09,811 - 18120 - scripts.funciones - INFO - El recall de la familia nn es: 0.588
+2020-05-05 21:08:09,811 - 18120 - scripts.funciones - INFO - ********************************************************************************
+2020-05-05 21:08:09,811 - 18120 - scripts.funciones - INFO - best roc_auc was: nn with an error of: 0.7712737944809983

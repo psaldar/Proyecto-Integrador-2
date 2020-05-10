@@ -97,6 +97,13 @@ def main(d_ini, d_fin):
     X = data_org.drop(columns = ['TW','BARRIO','Accidente','summary'])
     Y = data_org['Accidente']
     
+    ### Guardo congunto de test
+    
+    X_test_save = X
+    X_test_save['Accidente'] = Y
+    
+    X_test_save.to_csv('data/test.csv', index = False, sep = ',')
+    
     ### El modelo realiza la prediccion con el conjunto de datos, para esto los
     ### parametros de la funcion son el conjunto de datos, y el modelo que 
     ### se quiere utilizar
