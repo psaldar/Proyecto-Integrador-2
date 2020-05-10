@@ -6,7 +6,6 @@ Created on Fri Mar 27 15:19:43 2020
 """
 import os
 import sys
-import json
 import numpy as np
 import pandas as pd
 import datetime as dt
@@ -25,14 +24,9 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import GradientBoostingClassifier
 #%%
 ### Realizamos el cambio de directoroi de trabajo al "Directorio Base" que se
-### encuentra en el archivo conf.json
 current_dir = os.getcwd()
-file_name = 'conf.json'
-path = os.path.join(current_dir, f'{file_name}')
-with open(path, 'r') as f:
-    info_conf = json.load(f)
-            
-base_path = info_conf['base_path']
+base_path = os.path.dirname(current_dir)
+
 os.chdir(base_path)
 sys.path.insert(0, base_path)
 #%%

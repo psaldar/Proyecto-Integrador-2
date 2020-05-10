@@ -5,6 +5,13 @@ Created on Sun Mar  1 18:23:23 2020
 @author: nicol
 """
 
+import os
+### Realizamos el cambio de directoroi de trabajo al "Directorio Base"
+current_dir = os.getcwd()
+base_path = os.path.dirname(current_dir)
+base_path = os.path.dirname(base_path)
+
+os.chdir(base_path)
 
 import numpy as np
 import random
