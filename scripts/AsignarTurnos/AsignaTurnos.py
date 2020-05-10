@@ -11,31 +11,34 @@ import random
 import pandas as pd
 import datetime as dt
 from random import sample 
+import os
+import sys
 
 random.seed(42)
 
 
 
-
-### Mes inicial
-desde_mes = 8
-
-#    print('\nMes '+str(ierkeri)+'\n')
-year = 2019
-data_train_u = pd.read_csv('train.csv') 
-data_val = pd.read_csv('validation.csv') 
+### Lee datos de train (para hallar barrios con mas accidentes en train)
+data_train_u = pd.read_csv('../../data/train.csv') 
+data_val = pd.read_csv('../../data/validation.csv') 
 data_train = pd.concat([data_train_u, data_val])
 
-data_test_completa = pd.read_csv('test.csv')
+
+### Lee datos de test
+data_test_completa = pd.read_csv('../../data/test.csv')
 data_test = data_test_completa.drop(['BARRIO', 'Accidente', 'TW'], axis=1)
 
+
+
 ### Modelo usado
-from sklearn.externals import joblib
-loaded_model = joblib.load('nn_20200505_2014.sav')
-classifier = loaded_model[1]
+os.chdir('../..')
+sys.path.insert(0, os.getcwd())
+import scripts.funciones as funciones
+version = 'verFinal'    
+mod_version = funciones.carga_model('.', f'models/{version}', version)
+mod = mod_version['model'].steps[0][1]
 
- 
-
+classifier = mod_version['model'].steps[1][1][1]
 
 
 

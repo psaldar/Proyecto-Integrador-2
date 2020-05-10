@@ -204,6 +204,10 @@ def organizar_data_infoClima(data):
     data['festivo'] = es_hol
     
     
+    
+    
+    
+    
     ### Feature augmentation
     freq = '5H'
     variables = ['temperature','precipIntensity','apparentTemperature','dewPoint',
