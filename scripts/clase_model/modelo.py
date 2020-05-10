@@ -180,6 +180,8 @@ class Modelo:
         # Realiza la prediccion del modelo
         prob = model.predict_proba(X_val)
         
+        X_val.to_csv('data/test.csv', index = False, sep = ',')
+        
         preds_ff = X.loc[X_val.index]
         preds_ff['Predicted'] = prob[:, 1]     
 

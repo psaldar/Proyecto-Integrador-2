@@ -99,7 +99,7 @@ def main(d_ini, d_fin):
     
     ### Guardo congunto de test
     
-    X_test_save = X
+    X_test_save = pd.read_csv('data/test.csv')
     X_test_save['Accidente'] = Y
     
     X_test_save.to_csv('data/test.csv', index = False, sep = ',')
