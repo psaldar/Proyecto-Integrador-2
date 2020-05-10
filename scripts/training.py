@@ -80,8 +80,8 @@ def main(d_ini, d_fin):
     ### undersampling ademas del numero de procesadores en los cuales se desea
     ### repartir el proceso de entrenamiento
     cv = 3
-    freq1 = '96H'
-    freq2 = '336H'
+    freq1 = '4D'
+    freq2 = '14D'
     balance = 'rus'
     score = 'roc_auc'
     prop_deseada_under = 0.4
