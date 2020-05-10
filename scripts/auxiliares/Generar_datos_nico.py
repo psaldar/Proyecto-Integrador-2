@@ -9,14 +9,11 @@ import json
 import pandas as pd
 import datetime as dt
 #%%
+### Realizamos el cambio de directoroi de trabajo al "Directorio Base"
 current_dir = os.getcwd()
+base_path = os.path.dirname(current_dir)
+base_path = os.path.dirname(base_path)
 
-file_name = 'conf.json'
-path = os.path.join(current_dir, f'{file_name}')
-with open(path, 'r') as f:
-    info_conf = json.load(f)
-            
-base_path = info_conf['base_path']
 os.chdir(base_path)
 #%%
 import scripts.funciones as funciones

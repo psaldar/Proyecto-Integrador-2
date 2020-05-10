@@ -98,7 +98,18 @@ class Modelo:
         logger.info(f"""Data: (train after under) Proporcion 0 es {round((can_0/len(os_Y_tt))*100, 2)}%
                         y de 1 es {round((can_1/len(os_Y_tt))*100, 2)}%""")
         logger.info(f"Data: (train after under) Datos 0 son {can_0} y Datos 1 son {can_1}")
+        
+        ### Guardar data de entrenamiento y validacion
+        
+        X_train_save = os_X_tt.reset_index(drop = True)
+        X_train_save['Accidente'] = os_Y_tt.values
 
+        X_val_save = X_test.reset_index(drop = True)
+        X_val_save['Accidente'] = Y_test.values
+        
+        X_train_save.to_csv('data/training.csv', index = False, sep = ',')
+        X_val_save.to_csv('data/validation.csv', index = False, sep = ',')
+        
         # Entrena los diferentes modelos utilizando grid search, ademas de ir
         # guardando el mejor modelo de cada una de las familias de modelos que
         # se consideran en el diciconario de modelos
@@ -168,6 +179,8 @@ class Modelo:
         
         # Realiza la prediccion del modelo
         prob = model.predict_proba(X_val)
+        
+        X_val.to_csv('data/test.csv', index = False, sep = ',')
         
         preds_ff = X.loc[X_val.index]
         preds_ff['Predicted'] = prob[:, 1]     

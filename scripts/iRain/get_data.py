@@ -10,6 +10,13 @@ import shapely.geometry as shg
 from shapely.wkt import loads, dumps
 from shapely.geometry import Point,Polygon
 #%%
+### Realizamos el cambio de directoroi de trabajo al "Directorio Base"
+current_dir = os.getcwd()
+base_path = os.path.dirname(current_dir)
+base_path = os.path.dirname(base_path)
+
+os.chdir(base_path)
+#%%
 import zipfile
 from dateutil import tz
 from netCDF4 import Dataset

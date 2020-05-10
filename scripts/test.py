@@ -6,20 +6,13 @@ Created on Sun Mar 29 17:46:02 2020
 """
 import os
 import sys
-import json
 import pandas as pd
 import datetime as dt
 #%%
-### Realizamos el cambio de directoroi de trabajo al "Directorio Base" que se
-### encuentra en el archivo conf.json
+### Realizamos el cambio de directoroi de trabajo al "Directorio Base"
 current_dir = os.getcwd()
+base_path = os.path.dirname(current_dir)
 
-file_name = 'conf.json'
-path = os.path.join(current_dir, f'{file_name}')
-with open(path, 'r') as f:
-    info_conf = json.load(f)
-            
-base_path = info_conf['base_path']
 os.chdir(base_path)
 sys.path.insert(0, base_path)
 #%%
@@ -103,6 +96,13 @@ def main(d_ini, d_fin):
     ### explicativas (X) y la variable respuesta (Y)    
     X = data_org.drop(columns = ['TW','BARRIO','Accidente','summary'])
     Y = data_org['Accidente']
+    
+    ### Guardo congunto de test
+    
+    X_test_save = pd.read_csv('data/test.csv')
+    X_test_save['Accidente'] = Y
+    
+    X_test_save.to_csv('data/test.csv', index = False, sep = ',')
     
     ### El modelo realiza la prediccion con el conjunto de datos, para esto los
     ### parametros de la funcion son el conjunto de datos, y el modelo que 
