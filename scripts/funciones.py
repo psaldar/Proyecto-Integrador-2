@@ -239,10 +239,10 @@ def organizar_data_infoClima(data):
     data = data.merge(data_mean, how = 'left', on = ['TW','BARRIO'])
     data = data.dropna().reset_index(drop = True)    
     
-    ### Mean de precipitacion en las proximas 5 horas
+    ### Mean de precipitacion en las proximas 2 horas
 
     data_aux = data.copy()
-    data_aux['TW'] = data_aux['TW'] - dt.timedelta(hours = 5)
+    data_aux['TW'] = data_aux['TW'] - dt.timedelta(hours = 2)
     
     data_aux.index = data_aux.TW
     data_aux = data_aux.sort_index()
