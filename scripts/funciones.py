@@ -193,7 +193,7 @@ def organizar_data_infoClima(data):
     data= pd.get_dummies(data, columns=['icon'])
     data= pd.get_dummies(data, columns=['dia_sem'])
     
-    ## Festivos
+    ### Festivos
     col_holidays = holidays.CountryHoliday('CO')
     es_hol = []
     for i in data['TW']:
@@ -203,6 +203,15 @@ def organizar_data_infoClima(data):
             es_hol.append(0)
     data['festivo'] = es_hol
     
+    ### Agrega mes y year
+    
+    data['Mes'] = data['TW'].dt.month
+    data['Mes'] = data['Mes'].apply(lambda x: obtener_mes(x))
+    
+    data['Year'] = data['TW'].dt.year
+    
+    data= pd.get_dummies(data, columns=['Mes'])
+    data= pd.get_dummies(data, columns=['Year'])
     
     ### Feature augmentation
     freq = '5H'
@@ -226,6 +235,26 @@ def organizar_data_infoClima(data):
     data = data.merge(data_mean, how = 'left', on = ['TW','BARRIO'])
     data = data.dropna().reset_index(drop = True)    
     
+    ### Mean de precipitacion en las proximas 5 horas
+
+    data_aux = data.copy()
+    data_aux['TW'] = data_aux['TW'] - dt.timedelta(hours = 5)
+    
+    data_aux.index = data_aux.TW
+    data_aux = data_aux.sort_index()
+    data_aux = data_aux.drop(columns = 'TW')
+    
+    data_pivot = data_aux.pivot_table(values=['precipIntensity'], index='TW',columns='BARRIO', aggfunc=sum)
+    data_precip = data_pivot.rolling(freq, closed = 'right').mean().stack().reset_index(drop = False)
+    
+    col_precip = [*data_precip.columns[:2]]
+    for col in data_precip.columns[2:]:
+        col_precip.append(col + '_mean_forward')
+    
+    data_precip.columns = col_precip
+    
+    data = data.merge(data_precip, how = 'left', on = ['TW','BARRIO'])
+    data = data.dropna().reset_index(drop = True)
     
     return data
 
