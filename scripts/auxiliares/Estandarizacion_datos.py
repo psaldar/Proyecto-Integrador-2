@@ -17,63 +17,22 @@ base_path = os.path.dirname(base_path)
 
 train = pd.read_csv('data/train.csv')
 y_train = train.Accidente
+barrio_train = train['BARRIO'].values
+tw_train = train['TW'].values
+train = train.drop(columns = ['BARRIO','TW'])
 
 validation = pd.read_csv('data/validation.csv')
 y_val = validation.Accidente
+barrio_val = validation['BARRIO'].values
+tw_val = validation['TW'].values
+validation = validation.drop(columns = ['BARRIO','TW'])
 
 test = pd.read_csv('data/test.csv')
 y_test = test.Accidente
+barrio_test = test['BARRIO'].values
+tw_test = test['TW'].values
+test = test.drop(columns = ['BARRIO','TW'])
 
-test= test[['precipIntensity',
- 'precipProbability',
- 'temperature',
- 'apparentTemperature',
- 'dewPoint',
- 'humidity',
- 'windSpeed',
- 'cloudCover',
- 'uvIndex',
- 'visibility',
- 'poblado_alejandria',
- 'cumAcc_96H',
- 'cumAcc_336H',
- 'poblado_altosdelpoblado',
- 'poblado_astorga',
- 'poblado_castropol',
- 'poblado_elcastillo',
- 'poblado_eldiamanteno2',
- 'poblado_laaguacatala',
- 'poblado_lalinde',
- 'poblado_losbalsosno1',
- 'poblado_losnaranjos',
- 'poblado_manila',
- 'poblado_sanlucas',
- 'poblado_santamariadelosangeles',
- 'poblado_villacarlota',
- 'hora_1',
- 'hora_2',
- 'hora_3',
- 'hora_6',
- 'hora_7',
- 'hora_9',
- 'hora_10',
- 'hora_14',
- 'hora_16',
- 'hora_19',
- 'hora_20',
- 'hora_21',
- 'hora_23',
- 'icon_partly-cloudy-day',
- 'icon_partly-cloudy-night',
- 'icon_rain',
- 'dia_sem_3',
- 'dia_sem_4',
- 'dia_sem_5',
- 'dia_sem_6',
- 'humidity_mean',
- 'windSpeed_mean']]
-
-test['Accidente'] = y_test
 
 scaler = StandardScaler()
 scaler.fit(train)
@@ -87,7 +46,15 @@ train_z['Accidente'] = y_train
 validation_z['Accidente'] = y_val
 test_z['Accidente'] = y_test
 
+train_z['BARRIO'] = barrio_train
+validation_z['BARRIO'] = barrio_val
+test_z['BARRIO'] = barrio_test
 
-train_z.to_csv('data/train_z.csv')
-validation_z.to_csv('data/validation_z.csv')
-test_z.to_csv('data/test_z.csv')
+train_z['TW'] = tw_train
+validation_z['TW'] = tw_val
+test_z['TW'] = tw_test
+
+
+train_z.to_csv('data/train_z.csv', index = False, sep = ',')
+validation_z.to_csv('data/validation_z.csv', index = False, sep = ',')
+test_z.to_csv('data/test_z.csv', index = False, sep = ',')

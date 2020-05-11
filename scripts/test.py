@@ -40,7 +40,7 @@ def main(d_ini, d_fin):
     ### Realizamos la carga del modelo entrenado con el script training.py,
     ### importamos tanto el mejor modelo como el objeto de clase modelo 
     ### utilizado durante el entrenamiento
-    version = 'ver012NN'    
+    version = 'ver012NNPabs'    
     mod_version = funciones.carga_model(base_path, f'models/{version}', version)
     
     if 'model' in mod_version:
@@ -97,18 +97,22 @@ def main(d_ini, d_fin):
     X = data_org.drop(columns = ['TW','BARRIO','Accidente','summary'])
     Y = data_org['Accidente']
     
-    ### Guardo congunto de test
-    
-    X_test_save = pd.read_csv('data/test.csv')
-    X_test_save['Accidente'] = Y
-    
-    X_test_save.to_csv('data/test.csv', index = False, sep = ',')
     
     ### El modelo realiza la prediccion con el conjunto de datos, para esto los
     ### parametros de la funcion son el conjunto de datos, y el modelo que 
     ### se quiere utilizar
-    preds_ff = mod.predict(X, model_sel)
+    preds_ff = mod.predict(X, model_sel, save = True)
     preds_ff['Accidente'] = Y
+
+
+    ### Guardo congunto de test
+    
+    X_test_save = pd.read_csv('data/test.csv')
+    X_test_save['Accidente'] = Y
+    X_test_save['BARRIO'] = data_org['BARRIO'].values
+    X_test_save['TW'] = data_org['TW'].values
+    
+    X_test_save.to_csv('data/test.csv', index = False, sep = ',')
     
     ### Realizamos las gracias de violines, roc y precision-recall en el conjunto
     ### de datos de prueba

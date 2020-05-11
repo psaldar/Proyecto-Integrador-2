@@ -9,11 +9,10 @@ Created on Sun May 10 15:19:05 2020
 ##### Imports
 import os
 import sys
-import numpy as np
 import pandas as pd
 import datetime as dt
 import multiprocessing
-
+#%%
 from sklearn.base import clone
 from sklearn.metrics import recall_score 
 from sklearn.metrics import precision_score
@@ -52,6 +51,9 @@ mod_version = funciones.carga_model('.', f'models/{version}', version)
 mod = mod_version['model'].steps[0][1]
 
 classifier = mod_version['model'].steps[1][1]
+
+### Carga random forest
+# classifier  = funciones.carga_model_ind('.', f'models/ver012', 'rforest_20200505_1249')
 #%%
 ########## LECTURA DE DATOS ############
 d_ini = dt.datetime(2017,6,1)
@@ -100,7 +102,7 @@ Y = data_org['Accidente']
 #%%    
 ############# Partir en train y validation
 from sklearn.model_selection import train_test_split
-x_tra, x_val, y_tra, y_val = train_test_split(X,Y,test_size=0.8, random_state=42)
+x_tra, x_val, y_tra, y_val = train_test_split(X,Y,test_size=0.2, random_state=42)
 
 #### Fijar unos iniciales (Tomek, Nearest neighbors, etc)
 ### para ejecutarlos solo una vez
@@ -108,11 +110,13 @@ x_tra, x_val, y_tra, y_val = train_test_split(X,Y,test_size=0.8, random_state=42
 ### o smote para balancear el resto de las observaciones
 ### Tomek
 logger.info('Inica TOMEKLINKS')
+print('Inica TOMEKLINKS')
 from imblearn.under_sampling import TomekLinks
 rus = TomekLinks()
 X_tom, y_tom = rus.fit_sample(x_tra, y_tra)
 #### ENN
 logger.info('Inica ENN')
+print('Inica ENN')
 from imblearn.under_sampling import EditedNearestNeighbours
 enn = EditedNearestNeighbours()
 X_enn, y_enn = enn.fit_sample(x_tra, y_tra)
@@ -137,6 +141,7 @@ for samp in sampling_strategies:
     prob1 = classifier1.predict_proba(x_val)[:,1]
     print('\n\nRandom undersampling: ')
     print('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
+    print('Precision Recall AUC score: ' +str(funciones.precision_recall_auc_score(y_val, prob1)))    
     print('F1 score: ' +str(f1_score(y_val, pred1)))
     print('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
     print('Precission score: ' +str(precision_score(y_val, pred1)))
@@ -144,6 +149,7 @@ for samp in sampling_strategies:
     
     
     logger.info('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
+    logger.info('Precision Recall AUC score: ' +str(funciones.precision_recall_auc_score(y_val, prob1)))
     logger.info('F1 score: ' +str(f1_score(y_val, pred1)))
     logger.info('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
     logger.info('Precission score: ' +str(precision_score(y_val, pred1)))
@@ -163,6 +169,7 @@ for samp in sampling_strategies:
     prob1 = classifier2.predict_proba(x_val)[:,1]
     print('\n\nRandom oversampling: ')
     print('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
+    print('Precision Recall AUC score: ' +str(funciones.precision_recall_auc_score(y_val, prob1)))
     print('F1 score: ' +str(f1_score(y_val, pred1)))
     print('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
     print('Precission score: ' +str(precision_score(y_val, pred1)))
@@ -170,6 +177,7 @@ for samp in sampling_strategies:
     
     
     logger.info('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
+    logger.info('Precision Recall AUC score: ' +str(funciones.precision_recall_auc_score(y_val, prob1)))
     logger.info('F1 score: ' +str(f1_score(y_val, pred1)))
     logger.info('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
     logger.info('Precission score: ' +str(precision_score(y_val, pred1)))
@@ -187,6 +195,7 @@ for samp in sampling_strategies:
     prob1 = classifier3.predict_proba(x_val)[:,1]
     print('\n\nTomek Link + Random Undersampling: ')
     print('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
+    print('Precision Recall AUC score: ' +str(funciones.precision_recall_auc_score(y_val, prob1)))
     print('F1 score: ' +str(f1_score(y_val, pred1)))
     print('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
     print('Precission score: ' +str(precision_score(y_val, pred1)))
@@ -195,6 +204,7 @@ for samp in sampling_strategies:
     
     
     logger.info('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
+    logger.info('Precision Recall AUC score: ' +str(funciones.precision_recall_auc_score(y_val, prob1)))
     logger.info('F1 score: ' +str(f1_score(y_val, pred1)))
     logger.info('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
     logger.info('Precission score: ' +str(precision_score(y_val, pred1)))
@@ -202,56 +212,56 @@ for samp in sampling_strategies:
     
     logger.info('***'*20)
     
-    ############ Metodo 4: cluster centroids
-    from imblearn.under_sampling import ClusterCentroids
+    # ############ Metodo 4: cluster centroids
+    # from imblearn.under_sampling import ClusterCentroids
     
-    logger.info('Undersampling cluster centroids: ')
-    cus = ClusterCentroids(sampling_strategy = samp, random_state = 42,  n_jobs=n_proc)
-    X_rus, y_rus = cus.fit_sample(x_tra, y_tra)
-    classifier4 = clone(classifier)
-    classifier4.fit(X_rus, y_rus)
-    pred1 = classifier4.predict(x_val)
-    prob1 = classifier4.predict_proba(x_val)[:,1]
-    print('\n\nUndersampling cluster centroids: ')
-    print('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
-    print('F1 score: ' +str(f1_score(y_val, pred1)))
-    print('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
-    print('Precission score: ' +str(precision_score(y_val, pred1)))
-    print('Recall score: ' +str(recall_score(y_val, pred1)))
+    # logger.info('Undersampling cluster centroids: ')
+    # cus = ClusterCentroids(sampling_strategy = samp, random_state = 42,  n_jobs=n_proc)
+    # X_rus, y_rus = cus.fit_sample(x_tra, y_tra)
+    # classifier4 = clone(classifier)
+    # classifier4.fit(X_rus, y_rus)
+    # pred1 = classifier4.predict(x_val)
+    # prob1 = classifier4.predict_proba(x_val)[:,1]
+    # print('\n\nUndersampling cluster centroids: ')
+    # print('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
+    # print('F1 score: ' +str(f1_score(y_val, pred1)))
+    # print('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
+    # print('Precission score: ' +str(precision_score(y_val, pred1)))
+    # print('Recall score: ' +str(recall_score(y_val, pred1)))
     
     
-    logger.info('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
-    logger.info('F1 score: ' +str(f1_score(y_val, pred1)))
-    logger.info('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
-    logger.info('Precission score: ' +str(precision_score(y_val, pred1)))
-    logger.info('Recall score: ' +str(recall_score(y_val, pred1)))    
+    # logger.info('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
+    # logger.info('F1 score: ' +str(f1_score(y_val, pred1)))
+    # logger.info('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
+    # logger.info('Precission score: ' +str(precision_score(y_val, pred1)))
+    # logger.info('Recall score: ' +str(recall_score(y_val, pred1)))    
     
-    logger.info('***'*20)
+    # logger.info('***'*20)
     
-    ############ Metodo 5: nearest to cluster centroids    
-    logger.info('Undersampling nearest to cluster centroids: ')
-    cus = ClusterCentroids(sampling_strategy = samp, random_state = 42, voting='hard',  n_jobs=n_proc)
-    X_rus, y_rus = cus.fit_sample(x_tra, y_tra)
-    classifier5 = clone(classifier)
-    classifier5.fit(X_rus, y_rus)
-    pred1 = classifier5.predict(x_val)
-    prob1 = classifier5.predict_proba(x_val)[:,1]
-    print('\n\nUndersampling nearest to cluster centroids: ')
-    print('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
-    print('F1 score: ' +str(f1_score(y_val, pred1)))
-    print('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
-    print('Precission score: ' +str(precision_score(y_val, pred1)))
-    print('Recall score: ' +str(recall_score(y_val, pred1)))
+    # ############ Metodo 5: nearest to cluster centroids    
+    # logger.info('Undersampling nearest to cluster centroids: ')
+    # cus = ClusterCentroids(sampling_strategy = samp, random_state = 42, voting='hard',  n_jobs=n_proc)
+    # X_rus, y_rus = cus.fit_sample(x_tra, y_tra)
+    # classifier5 = clone(classifier)
+    # classifier5.fit(X_rus, y_rus)
+    # pred1 = classifier5.predict(x_val)
+    # prob1 = classifier5.predict_proba(x_val)[:,1]
+    # print('\n\nUndersampling nearest to cluster centroids: ')
+    # print('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
+    # print('F1 score: ' +str(f1_score(y_val, pred1)))
+    # print('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
+    # print('Precission score: ' +str(precision_score(y_val, pred1)))
+    # print('Recall score: ' +str(recall_score(y_val, pred1)))
     
 
     
-    logger.info('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
-    logger.info('F1 score: ' +str(f1_score(y_val, pred1)))
-    logger.info('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
-    logger.info('Precission score: ' +str(precision_score(y_val, pred1)))
-    logger.info('Recall score: ' +str(recall_score(y_val, pred1)))
+    # logger.info('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
+    # logger.info('F1 score: ' +str(f1_score(y_val, pred1)))
+    # logger.info('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
+    # logger.info('Precission score: ' +str(precision_score(y_val, pred1)))
+    # logger.info('Recall score: ' +str(recall_score(y_val, pred1)))
     
-    logger.info('***'*20)
+    # logger.info('***'*20)
     
     ############ Metodo 6: Near Miss
     from imblearn.under_sampling import NearMiss
@@ -264,6 +274,7 @@ for samp in sampling_strategies:
     prob1 = classifier6.predict_proba(x_val)[:,1]
     print('\n\nNear Miss: ')
     print('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
+    print('Precision Recall AUC score: ' +str(funciones.precision_recall_auc_score(y_val, prob1)))
     print('F1 score: ' +str(f1_score(y_val, pred1)))
     print('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
     print('Precission score: ' +str(precision_score(y_val, pred1)))
@@ -271,6 +282,7 @@ for samp in sampling_strategies:
     
     
     logger.info('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
+    logger.info('Precision Recall AUC score: ' +str(funciones.precision_recall_auc_score(y_val, prob1)))
     logger.info('F1 score: ' +str(f1_score(y_val, pred1)))
     logger.info('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
     logger.info('Precission score: ' +str(precision_score(y_val, pred1)))
@@ -288,6 +300,7 @@ for samp in sampling_strategies:
     prob1 = classifier7.predict_proba(x_val)[:,1]
     print('\n\nENN + Random Undersampling: ')
     print('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
+    print('Precision Recall AUC score: ' +str(funciones.precision_recall_auc_score(y_val, prob1)))
     print('F1 score: ' +str(f1_score(y_val, pred1)))
     print('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
     print('Precission score: ' +str(precision_score(y_val, pred1)))
@@ -296,6 +309,7 @@ for samp in sampling_strategies:
     
     
     logger.info('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
+    logger.info('Precision Recall AUC score: ' +str(funciones.precision_recall_auc_score(y_val, prob1)))
     logger.info('F1 score: ' +str(f1_score(y_val, pred1)))
     logger.info('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
     logger.info('Precission score: ' +str(precision_score(y_val, pred1)))
@@ -314,6 +328,7 @@ for samp in sampling_strategies:
     prob1 = classifier8.predict_proba(x_val)[:,1]
     print('\n\nSMOTE: ')
     print('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
+    print('Precision Recall AUC score: ' +str(funciones.precision_recall_auc_score(y_val, prob1)))
     print('F1 score: ' +str(f1_score(y_val, pred1)))
     print('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
     print('Precission score: ' +str(precision_score(y_val, pred1)))
@@ -322,6 +337,7 @@ for samp in sampling_strategies:
 
     
     logger.info('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
+    logger.info('Precision Recall AUC score: ' +str(funciones.precision_recall_auc_score(y_val, prob1)))
     logger.info('F1 score: ' +str(f1_score(y_val, pred1)))
     logger.info('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
     logger.info('Precission score: ' +str(precision_score(y_val, pred1)))
@@ -340,6 +356,7 @@ for samp in sampling_strategies:
     prob1 = classifier9.predict_proba(x_val)[:,1]
     print('\n\nSMOTETomek: ')
     print('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
+    print('Precision Recall AUC score: ' +str(funciones.precision_recall_auc_score(y_val, prob1)))
     print('F1 score: ' +str(f1_score(y_val, pred1)))
     print('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
     print('Precission score: ' +str(precision_score(y_val, pred1)))
@@ -348,6 +365,7 @@ for samp in sampling_strategies:
     
     
     logger.info('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
+    logger.info('Precision Recall AUC score: ' +str(funciones.precision_recall_auc_score(y_val, prob1)))
     logger.info('F1 score: ' +str(f1_score(y_val, pred1)))
     logger.info('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
     logger.info('Precission score: ' +str(precision_score(y_val, pred1)))
@@ -366,6 +384,7 @@ for samp in sampling_strategies:
     prob1 = classifier10.predict_proba(x_val)[:,1]
     print('\n\nSMOTEENN: ')
     print('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
+    print('Precision Recall AUC score: ' +str(funciones.precision_recall_auc_score(y_val, prob1)))
     print('F1 score: ' +str(f1_score(y_val, pred1)))
     print('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
     print('Precission score: ' +str(precision_score(y_val, pred1)))
@@ -373,6 +392,7 @@ for samp in sampling_strategies:
     
     
     logger.info('ROC AUC score: ' +str(roc_auc_score(y_val, prob1)))
+    logger.info('Precision Recall AUC score: ' +str(funciones.precision_recall_auc_score(y_val, prob1)))
     logger.info('F1 score: ' +str(f1_score(y_val, pred1)))
     logger.info('Balanced accuracy score: ' +str(balanced_accuracy_score(y_val, pred1)))
     logger.info('Precission score: ' +str(precision_score(y_val, pred1)))

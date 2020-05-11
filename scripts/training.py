@@ -62,7 +62,7 @@ from scripts.clase_model.modelo import Modelo
 def main(d_ini, d_fin):
     
     ### Definimos el nombre o version del modelo que vavos a considerar
-    version = 'ver012NN'
+    version = 'ver012NNPabs'
     now_date = dt.datetime.now()
     
     ### Definimos parametris para el modelo. El numero de validaciones cruzadas
@@ -127,58 +127,15 @@ def main(d_ini, d_fin):
           
     layers_nn = list(set(layers_nn))
     
-    models = {
-                    'logistic':{
-                                'mod':LogisticRegression(random_state = 42),
-                                'par':{
-                                    'penalty': ('l1','l2'),
-                                    'solver': ('saga','lbfgs')
-                                 
-                                }                         
-                    },
-                    'nn':{
-                                'mod' : MLPClassifier( solver = 'adam',shuffle = True, random_state= 42),
-                                'par':{
-                                    'hidden_layer_sizes' : layers_nn,
-                                    'activation' : ('logistic', 'relu','tanh','identity'),
-                                    'learning_rate_init': [0.001,0.01,0.1,0.3,0.5,0.9],
-                                    'alpha':[0.05, 0.1, 0.5 , 3, 5, 10, 20]
-                                    }
-                         
-                    },
-                    'rforest':{
-                              'mod': RandomForestClassifier(random_state= 42),
-                              'par': {'n_estimators':[10,20,30,40,50,60,70,80,90,100,200,300,400,500],
-                                      'max_depth': [None, 2, 4, 6, 8, 10, 20, 30],
-                                      'criterion':('gini','entropy'),
-                                      'bootstrap': [True,False]
-                                      }
-                    },
-                    'xtree':{
-                              'mod': ExtraTreesClassifier(random_state = 42),
-                              'par': {'n_estimators':[10,20,30,40,50,60,70,80,90,100,200,300,400,500],
-                                      'max_depth':[None, 2, 4, 6, 8, 10, 20, 30],
-                                      'criterion':('gini','entropy'),
-                                      'bootstrap': [True,False]}                     
-                    },
-                    'gradient':{
-                                'mod' : GradientBoostingClassifier(random_state = 42),
-                                'par' : {'loss' : ('deviance', 'exponential'),
-                                        'n_estimators': [10,20,30,40,50,60,70,80,90,100,200,300,400,500],
-                                        'max_depth' : [3, 4, 5, 6, 7, 8, 9],
-                                        'learning_rate':[0.1,0.3,0.5,0.7,0.9]
-                                        }
-                    },
-                    'xgboost':{
-                            'mod':XGBClassifier(random_state = 42),
-                            'par':{
-                                  'n_estimators':[10,20,30,40,50,60,70,80,90,100,200,300,400,500],
-                                  'max_depth': [ 2, 4, 6, 8, 10, 20, 30]
-                                }
-                            }
-              }
-    
     # models = {
+    #                 'logistic':{
+    #                             'mod':LogisticRegression(random_state = 42),
+    #                             'par':{
+    #                                 'penalty': ('l1','l2'),
+    #                                 'solver': ('saga','lbfgs')
+                                 
+    #                             }                         
+    #                 },
     #                 'nn':{
     #                             'mod' : MLPClassifier( solver = 'adam',shuffle = True, random_state= 42),
     #                             'par':{
@@ -187,8 +144,48 @@ def main(d_ini, d_fin):
     #                                 'learning_rate_init': [0.001,0.01,0.1,0.3,0.5,0.9],
     #                                 'alpha':[0.05, 0.1, 0.5 , 3, 5, 10, 20]
     #                                 }
+                         
+    #                 },
+    #                 'rforest':{
+    #                           'mod': RandomForestClassifier(random_state= 42),
+    #                           'par': {'n_estimators':[10,20,30,40,50,60,70,80,90,100,200,300,400,500],
+    #                                   'max_depth': [None, 2, 4, 6, 8, 10, 20, 30],
+    #                                   'criterion':('gini','entropy'),
+    #                                   'bootstrap': [True,False]
+    #                                   }
+    #                 },
+    #                 'xtree':{
+    #                           'mod': ExtraTreesClassifier(random_state = 42),
+    #                           'par': {'n_estimators':[10,20,30,40,50,60,70,80,90,100,200,300,400,500],
+    #                                   'max_depth':[None, 2, 4, 6, 8, 10, 20, 30],
+    #                                   'criterion':('gini','entropy'),
+    #                                   'bootstrap': [True,False]}                     
+    #                 },
+    #                 'gradient':{
+    #                             'mod' : GradientBoostingClassifier(random_state = 42),
+    #                             'par' : {'loss' : ('deviance', 'exponential'),
+    #                                     'n_estimators': [10,20,30,40,50,60,70,80,90,100,200,300,400,500],
+    #                                     'max_depth' : [3, 4, 5, 6, 7, 8, 9],
+    #                                     'learning_rate':[0.1,0.3,0.5,0.7,0.9]
+    #                                     }
+    #                 },
+    #                 'xgboost':{
+    #                         'mod':XGBClassifier(random_state = 42),
+    #                         'par':{
+    #                               'n_estimators':[10,20,30,40,50,60,70,80,90,100,200,300,400,500],
+    #                               'max_depth': [ 2, 4, 6, 8, 10, 20, 30]
+    #                             }
     #                         }
     #           }
+    
+    models = {
+                    'nn':{
+                                'mod' : MLPClassifier(hidden_layer_sizes = (30,57),learning_rate_init = 0.001 ,alpha = 3 ,solver = 'adam',shuffle = True, random_state= 42),
+                                'par':{
+                                    'activation' : ('logistic', 'relu','tanh','identity')
+                                    }
+                            }
+              }
     
     ### Agregamos el diccionario de modelo a uno de los atributos del objeto
     ### para posteriormente realizar el entrenamiento
@@ -260,7 +257,9 @@ def main(d_ini, d_fin):
                                                  score = score,
                                                  n_proc = n_proc,
                                                  balance = balance,
-                                                 prop_deseada_under = prop_deseada_under)
+                                                 prop_deseada_under = prop_deseada_under,
+                                                 barrios = data_org['BARRIO'].values,
+                                                 tws = data_org['TW'].values)
        
  
     #Realiza la prediccion de las fallas en un conjunto de datos de prueba

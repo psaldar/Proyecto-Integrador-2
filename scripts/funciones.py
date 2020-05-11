@@ -68,6 +68,14 @@ def obtener_mes(x):
     elif x== 12:
         return 'Diciembre'
     
+def precision_recall_auc_score(y_true, proba):
+    
+    precision, recall, _ = metrics.precision_recall_curve(y_true, proba)
+    
+    auc = metrics.auc(recall, precision)
+    
+    return auc
+
 ### Esta funcion realiza la conexion y ejecucion de un query en un archivo
 ### sqlite. Los parametros son la ruta o directorio del archivo y el query
 ### a ser ejecutado
@@ -334,6 +342,7 @@ def grid(base_path, now_date, path_file, os_X_tt, os_Y_tt,X_test,Y_test, models,
        fScore = metrics.f1_score(Y_test,preds) 
        precision = metrics.precision_score(Y_test,preds)
        recall = metrics.recall_score(Y_test,preds)
+       prec_rec_auc = precision_recall_auc_score(Y_test, proba[:,1])
        
        selection_time = time.time() - t_beg
        
@@ -349,7 +358,8 @@ def grid(base_path, now_date, path_file, os_X_tt, os_Y_tt,X_test,Y_test, models,
        ### Escribe en el archivo de log las metricas obtenidas en el conjunto
        ### de validacion
        logger.info(f"El tiempo de seleccion fue: {selection_time:0.3f} s")
-       logger.info(f"El {score} de la familia {name} es: {models[name]['mae']:0.3f}")
+       logger.info(f"El {score} de la familia {name} es: {prec_rec_auc:0.3f}")
+       logger.info(f"El precision-recall AUC de la familia {name} es: {models[name]['mae']:0.3f}")
        logger.info(f"El b_accuracy de la familia {name} es: {bAccuracy:0.3f}")
        logger.info(f"El fscore de la familia {name} es: {fScore:0.3f}")
        logger.info(f"La precision de la familia {name} es: {precision:0.3f}")

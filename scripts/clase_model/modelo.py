@@ -61,7 +61,10 @@ class Modelo:
     # Esta funcion se encarga de entrenar los modelos en el diccionario de
     # modelos, ademas de elegir el mejor modelo para ser utilizado
     def train(self,X,Y,score = 'roc_auc',cv = 2,n_proc = 1,desc_model_sav = '',
-              prop_deseada_under = 0.2,balance = 'rus',**kwargs):
+              prop_deseada_under = 0.2,balance = 'rus',barrios= [],tws = [],**kwargs):
+        
+        X['BARRIO'] = barrios
+        X['TW'] = tws
         
         # Realiza una particion de los datos de entrenamiento, se utiliza un
         # 80% de los datos y un 20% para ver el desempeño del conjunto de
@@ -107,8 +110,13 @@ class Modelo:
         X_val_save = X_test.reset_index(drop = True)
         X_val_save['Accidente'] = Y_test.values
         
-        X_train_save.to_csv('data/training.csv', index = False, sep = ',')
+        X_train_save.to_csv('data/train.csv', index = False, sep = ',')
         X_val_save.to_csv('data/validation.csv', index = False, sep = ',')
+        
+        
+        os_X_tt = os_X_tt.drop(columns = ['BARRIO','TW'])
+        X_test = X_test.drop(columns = ['BARRIO','TW'])
+        X= X.drop(columns = ['BARRIO','TW'])
         
         # Entrena los diferentes modelos utilizando grid search, ademas de ir
         # guardando el mejor modelo de cada una de las familias de modelos que
@@ -139,7 +147,7 @@ class Modelo:
     # transform. Revisa que se tenga información para todas las variables
     # con las que fue entrenado el modelo, en caso de que se tengan variables
     # faltantes, se crean y se les asigna un valor de 0
-    def predict(self, X,model,**kwargs):
+    def predict(self, X,model,save = False,**kwargs):
         
         cols_order = self.cols_order
         data_cols = list(X.columns)
@@ -171,6 +179,9 @@ class Modelo:
         # entrenamiento del modelo
         X_val= X[cols_order]
         
+        if save:
+            X_val.to_csv('data/test.csv', index = False, sep = ',')
+        
         # En caso de que no se tenga informacion para realizar la prediccion,
         # la funcion retorna vacio
         if X_val.empty:
@@ -179,8 +190,6 @@ class Modelo:
         
         # Realiza la prediccion del modelo
         prob = model.predict_proba(X_val)
-        
-        X_val.to_csv('data/test.csv', index = False, sep = ',')
         
         preds_ff = X.loc[X_val.index]
         preds_ff['Predicted'] = prob[:, 1]     
