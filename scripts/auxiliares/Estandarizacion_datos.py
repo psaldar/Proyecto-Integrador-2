@@ -13,6 +13,7 @@ from sklearn.preprocessing import StandardScaler
 current_dir = os.getcwd()
 base_path = os.path.dirname(current_dir)
 base_path = os.path.dirname(base_path)
+os.chdir(base_path)
 #%%
 
 train = pd.read_csv('data/train.csv')

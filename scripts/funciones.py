@@ -236,7 +236,7 @@ def organizar_data_infoClima(data):
     data_aux = data_aux.drop(columns = 'TW')
     
     data_pivot = data_aux.pivot_table(values=variables, index='TW',columns='BARRIO', aggfunc=sum)
-    data_mean = data_pivot.rolling(freq, closed = 'left').mean().stack().reset_index(drop = False)
+    data_mean = data_pivot.rolling(freq, closed = 'right').mean().stack().reset_index(drop = False)
     
     col_means = [*data_mean.columns[:2]]
     for col in data_mean.columns[2:]:

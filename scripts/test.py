@@ -92,6 +92,8 @@ def main(d_ini, d_fin):
     data_org['poblado'] = data_org['BARRIO']
     data_org= pd.get_dummies(data_org, columns=['poblado'])
     
+    ### Filtro del 31 de diciembre
+    data_org = data_org[data_org['TW']<dt.datetime(2019,12,31)].reset_index(drop = True)
     ### Relizamos la particion del conjunto de datos en las variables
     ### explicativas (X) y la variable respuesta (Y)    
     X = data_org.drop(columns = ['TW','BARRIO','Accidente','summary'])
