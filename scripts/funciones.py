@@ -275,10 +275,13 @@ def obtener_accidentes_acumulados(data, raw_accidentes, freq = '4D'):
     spa_cum = spa_cum.resample('1D').agg('sum')
     
     Acc_sum = spa_cum.rolling(freq, closed = 'left').sum().stack().reset_index(drop = False)    
-    Acc_sum.columns = ['TW', 'BARRIO', f'cumAcc_{freq}']
+    Acc_sum.columns = ['TW_aux', 'BARRIO', f'cumAcc_{freq}']
     
-    data = data.merge(Acc_sum, how = 'left', on =['TW','BARRIO']).fillna(0)
+    data['TW_aux'] =pd.to_datetime(data['TW'].apply(lambda x: x.strftime("%Y-%m-%d 00:00:00")))
     
+    data = data.merge(Acc_sum, how = 'left', on =['TW_aux','BARRIO']).fillna(0)
+    
+    data = data.drop(columns = 'TW_aux')
     return data
 
 #En la funcion grid, se considera un diccionario de modelos para ser entrenado,

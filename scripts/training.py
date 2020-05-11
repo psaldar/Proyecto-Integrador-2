@@ -205,7 +205,7 @@ def main(d_ini, d_fin):
     
     ### agregamos la informacion relacionada a la cantidad de accidentes ocurridas
     ### en las ultimas X horas
-    d_ini_acc = d_ini - dt.timedelta(hours = int(freq2.replace('H', '')))
+    d_ini_acc = d_ini - dt.timedelta(days = int(freq2.replace('D', '')))
     raw_accidentes = funciones.read_accidentes(d_ini_acc, d_fin)
     
     ### Agrega senal a corto plazo

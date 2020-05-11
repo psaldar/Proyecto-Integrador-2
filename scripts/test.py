@@ -69,12 +69,12 @@ def main(d_ini, d_fin):
         freq2 = mod.freq2
     except Exception as e:
         logger.info(f'Problemas con las frecuencias de las senales {e}')
-        freq1 = '1H'
-        freq2 = '1H'
+        freq1 = '1D'
+        freq2 = '1D'
     
     ### agregamos la informacion relacionada a la cantidad de accidentes ocurridas
     ### en las ultimas X horas    
-    d_ini_acc = d_ini - dt.timedelta(hours = int(freq2.replace('H', '')))
+    d_ini_acc = d_ini - dt.timedelta(days = int(freq2.replace('D', '')))
     raw_accidentes = funciones.read_accidentes(d_ini_acc, d_fin)
     
     ### Agrega senal a corto plazo
