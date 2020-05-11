@@ -46,14 +46,14 @@ logging.basicConfig(level=logging.DEBUG,
                     handlers = [handler])
 #%%
 import scripts.funciones as funciones
-version = 'verFinal'    
-mod_version = funciones.carga_model('.', f'models/{version}', version)
-mod = mod_version['model'].steps[0][1]
+# version = 'verFinal'    
+# mod_version = funciones.carga_model('.', f'models/{version}', version)
+# mod = mod_version['model'].steps[0][1]
 
-classifier = mod_version['model'].steps[1][1]
+# classifier = mod_version['model'].steps[1][1]
 
 ### Carga random forest
-# classifier  = funciones.carga_model_ind('.', f'models/ver012', 'rforest_20200505_1249')
+classifier  = funciones.carga_model_ind('.', f'models/ver012', 'rforest_20200505_1249')
 #%%
 ########## LECTURA DE DATOS ############
 d_ini = dt.datetime(2017,6,1)
@@ -102,7 +102,11 @@ Y = data_org['Accidente']
 #%%    
 ############# Partir en train y validation
 from sklearn.model_selection import train_test_split
-x_tra, x_val, y_tra, y_val = train_test_split(X,Y,test_size=0.2, random_state=42)
+x_tra, x_val, y_tra, y_val = train_test_split(X, 
+                                              Y,
+                                              stratify = Y,
+                                              test_size = 0.2,
+                                              random_state = 42)
 
 #### Fijar unos iniciales (Tomek, Nearest neighbors, etc)
 ### para ejecutarlos solo una vez
