@@ -6,6 +6,7 @@ Created on Fri Mar 27 15:19:43 2020
 """
 import os
 import sys
+import json
 import numpy as np
 import pandas as pd
 import datetime as dt
@@ -62,7 +63,7 @@ from scripts.clase_model.modelo import Modelo
 def main(d_ini, d_fin):
     
     ### Definimos el nombre o version del modelo que vavos a considerar
-    version = 'ver012NNPabs'
+    version = 'PruebaPabs'
     now_date = dt.datetime.now()
     
     ### Definimos parametris para el modelo. El numero de validaciones cruzadas
@@ -74,12 +75,17 @@ def main(d_ini, d_fin):
     ### undersampling ademas del numero de procesadores en los cuales se desea
     ### repartir el proceso de entrenamiento
     cv = 3
-    freq1 = '4D'
-    freq2 = '14D'
-    balance = 'rus'
+    freq1 = '1D'
+    freq2 = '3D'
+    freq3 = '7D'
+    freq4 = '14D'
+    freq5 = '30D'
+    freq6 = '60D'
+    balance = 'tomek'
     score = 'roc_auc'
-    prop_deseada_under = 0.4
+    prop_deseada_under = 30/70
     n_proc = multiprocessing.cpu_count() -1
+    senales = [freq1, freq2, freq3, freq4, freq5, freq6]
     
     descripcion = f""" Entrena modelo para realizar la prediccion de accidentes
                        en los barrios del Poblado. considera solo variables
@@ -97,8 +103,8 @@ def main(d_ini, d_fin):
     
     ### Agregamos al objeto las frecuencias para mirar las senales de acumulado
     ### de fallas para luego ser utilizadas en la prueba
-    mod.freq1 = freq1
-    mod.freq2 = freq2
+    mod.freq1 = senales
+    mod.freq2 = freq6
     
     ### Para el entrenamiento, utilizaremos una busqueda Grid para encontrar
     ### la mejor combinacion de hiperparametros de cada uno de los modelos, por
@@ -205,15 +211,15 @@ def main(d_ini, d_fin):
     d_ini_acc = d_ini - dt.timedelta(days = int(freq2.replace('D', '')))
     raw_accidentes = funciones.read_accidentes(d_ini_acc, d_fin)
     
-    ### Agrega senal a corto plazo
-    data_org = funciones.obtener_accidentes_acumulados(data_org, 
-                                                        raw_accidentes, 
-                                                        freq = freq1)
-    
-    ### Agrega senal a largo plazo
-    data_org = funciones.obtener_accidentes_acumulados(data_org, 
-                                                        raw_accidentes, 
-                                                        freq = freq2)
+    ### agregamos la informacion relacionada a la cantidad de accidentes ocurridas
+    ### en las ultimas X horas
+    ### Agregar senales
+    d_ini_acc = d_ini - dt.timedelta(days = int(freq6.replace('D', '')))  ### freq mayor
+    raw_accidentes = funciones.read_accidentes(d_ini_acc, d_fin)
+    for fresen in senales:
+        data_org = funciones.obtener_accidentes_acumulados(data_org, 
+                                                            raw_accidentes, 
+                                                            freq = fresen)
     
     ### Convertimos la bariable de Barrios en variable dummy para ser incluida
     ### en el modelo
@@ -230,20 +236,12 @@ def main(d_ini, d_fin):
     ### terminar el procesamiento de las variables antes de pasar a la etapa
     ### de entrenamiento
 
-    vars_ele = ['precipIntensity',
-                'precipProbability', 'temperature', 'apparentTemperature', 'dewPoint',
-                'humidity', 'windSpeed', 'cloudCover',  
-                'uvIndex', 'visibility', 'poblado_alejandria', f'cumAcc_{freq1}',f'cumAcc_{freq2}', 
-                'poblado_altosdelpoblado', 'poblado_astorga', 'poblado_castropol', 
-                'poblado_elcastillo', 'poblado_eldiamanteno2', 
-                'poblado_laaguacatala', 'poblado_lalinde', 'poblado_losbalsosno1', 
-                'poblado_losnaranjos', 'poblado_manila', 'poblado_sanlucas', 
-                'poblado_santamariadelosangeles', 'poblado_villacarlota', 'hora_1', 
-                'hora_2', 'hora_3', 'hora_6', 'hora_7', 'hora_9', 'hora_10', 
-                'hora_14', 'hora_16', 'hora_19', 'hora_20', 'hora_21', 
-                'hora_23', 'icon_partly-cloudy-day', 
-                'icon_partly-cloudy-night', 'icon_rain', 'dia_sem_3', 'dia_sem_4', 
-                'dia_sem_5', 'dia_sem_6', 'humidity_mean', 'windSpeed_mean',]
+    file_name = 'analisis_var_relevantes.json'
+    path = os.path.join(base_path, f'models/verFinal/{file_name}')
+    with open(path, 'r') as f:
+        info_vars = json.load(f)
+
+    vars_ele = info_vars['forward']['features']
     X = X[vars_ele]        
 
     
@@ -297,5 +295,5 @@ if __name__ == '__main__':
     ### Se ejecuta el la funcion main pasando como parametros el rango de fechas
     ### en el que se considerara la informacion del entrenamiento
     d_ini = dt.datetime(2017,6,1)
-    d_fin = dt.datetime(2019,8,1)    
+    d_fin = dt.datetime(2017,6,15)    
     main(d_ini, d_fin)

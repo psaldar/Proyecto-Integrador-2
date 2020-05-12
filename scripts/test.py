@@ -65,27 +65,22 @@ def main(d_ini, d_fin):
     ### En caso que se considere acumulado de fallas, realiza la validacion
     ### si el modelo entrenado tiene la frecuencia utilizada
     try:
-        freq1 = mod.freq1
+        senales = mod.freq1
         freq2 = mod.freq2
     except Exception as e:
         logger.info(f'Problemas con las frecuencias de las senales {e}')
-        freq1 = '1D'
-        freq2 = '1D'
+        freq1 = ['1D', '3D', '7D', '14D', '30D', '60D']
+        freq2 = '60D'
     
     ### agregamos la informacion relacionada a la cantidad de accidentes ocurridas
-    ### en las ultimas X horas    
-    d_ini_acc = d_ini - dt.timedelta(days = int(freq2.replace('D', '')))
+    ### en las ultimas X horas
+    ### Agregar senales
+    d_ini_acc = d_ini - dt.timedelta(days = int(freq6.replace('D', '')))  ### freq mayor
     raw_accidentes = funciones.read_accidentes(d_ini_acc, d_fin)
-    
-    ### Agrega senal a corto plazo
-    data_org = funciones.obtener_accidentes_acumulados(data_org, 
-                                                        raw_accidentes, 
-                                                        freq = freq1)
-    
-    ### Agrega senal a largo plazo
-    data_org = funciones.obtener_accidentes_acumulados(data_org, 
-                                                        raw_accidentes, 
-                                                        freq = freq2)
+    for fresen in senales:
+        data_org = funciones.obtener_accidentes_acumulados(data_org, 
+                                                            raw_accidentes, 
+                                                            freq = fresen)
 
     ### Convertimos la bariable de Barrios en variable dummy para ser incluida
     ### en el modelo    

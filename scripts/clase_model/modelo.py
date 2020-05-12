@@ -14,6 +14,7 @@ import numpy as np
 import pandas as pd
 import datetime as dt
 
+from imblearn.under_sampling import TomekLinks
 from sklearn.model_selection import train_test_split
 from imblearn.under_sampling import RandomUnderSampler
 
@@ -76,24 +77,37 @@ class Modelo:
                                                             test_size = 0.2,
                                                             random_state = 42)
 
-        can_0 = len(Y_train) - Y_train.sum()
-        can_1 = Y_train.sum()
-        logger.info(f"""Data: (initial) Proporcion 0 es {round((can_0/len(Y_train))*100, 2)}%
-                        y de 1 es {round((can_1/len(Y_train))*100, 2)}%""")       
-        
-
-        tra_0 = int(len(Y_train) - Y_train.sum())
-        tra_1 = int(Y_train.sum())
-        
-        mul_updown = (tra_0 * prop_deseada_under - tra_1 * (1 - prop_deseada_under)) / (tra_0 * prop_deseada_under)    
-        fac_1 = int(tra_0 * (1 - mul_updown))
         
         if balance == 'rus':
         # keeps original sample size for Failures 1
+
+            can_0 = len(Y_train) - Y_train.sum()
+            can_1 = Y_train.sum()
+            logger.info(f"""Data: (initial) Proporcion 0 es {round((can_0/len(Y_train))*100, 2)}%
+                            y de 1 es {round((can_1/len(Y_train))*100, 2)}%""")       
+            
+    
+            tra_0 = int(len(Y_train) - Y_train.sum())
+            tra_1 = int(Y_train.sum())
+            
+            mul_updown = (tra_0 * prop_deseada_under - tra_1 * (1 - prop_deseada_under)) / (tra_0 * prop_deseada_under)    
+            fac_1 = int(tra_0 * (1 - mul_updown))
+
             ratio_u = {0 : fac_1, 1 : tra_1}
             rus = RandomUnderSampler(sampling_strategy = ratio_u, random_state=42)
             
             os_X_tt, os_Y_tt = rus.fit_sample(X_train, Y_train)
+            
+        elif balance == 'tomek':
+            tomeklinks = TomekLinks()
+            X_tom, y_tom = tomeklinks.fit_sample(X_train.drop(columns = ['TW','BARRIO']), Y_train)
+            
+            X_tom['BARRIO'] = barrios[tomeklinks.sample_indices_]
+            X_tom['TW'] = tws[tomeklinks.sample_indices_]
+            
+            rus = RandomUnderSampler(sampling_strategy = prop_deseada_under,random_state = 42)
+            os_X_tt, os_Y_tt = rus.fit_sample(X_train, Y_train)
+            
         
         logger.info("Undersampling done")
         can_0 = len(os_Y_tt) - sum(os_Y_tt)
