@@ -117,6 +117,7 @@ X_rus, y_rus = rus.fit_sample(x_tra, y_tra)
 
 
 
+
 #### Calculamos correlaciones, correlaciones parciales y point biserial correlations
 X_rus['Accidente'] = y_rus.copy()
 corr_y = X_rus.corr()['Accidente']
@@ -149,7 +150,7 @@ corr_x = X_rus_ord.corr()
 ### Valor de correlacion umbral (si algun par de variables explicativas tiene
 ### una correlacion mayor a esta, se elimina la variable de este par que 
 ### tenga una menor correlacion parcial con la variable de salida)
-cor_umb = 0.9
+cor_umb = 0.95
 
 variabs = list(X_rus_ord.columns)
 X_rus_aux = X_rus_ord.copy()

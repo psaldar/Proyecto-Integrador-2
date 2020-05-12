@@ -4,13 +4,20 @@ Created on Sun Mar  1 18:25:00 2020
 
 @author: nicol
 """
-
+import os
+import sys
+#%%
+# ### Modelo base
+# os.chdir('../..')
+# sys.path.insert(0, os.getcwd())
+#%%
 ##### Este archivo contiene todos los scripts utilitarios usados 
 ##### para el algoritmo genetico
 
 import random
 import matplotlib
 import numpy as np
+import scripts.funciones as funciones
 from sklearn.metrics import balanced_accuracy_score, roc_auc_score
 
 random.seed(42)
@@ -28,7 +35,9 @@ def reduce_features(solution, features):
 ### Accuracy
 def classification_accuracy(labels, predictions):
     #metric = balanced_accuracy_score(labels, predictions)
-    metric = roc_auc_score(labels, predictions)
+    #metric = roc_auc_score(labels, predictions)
+    metric = funciones.precision_recall_auc_score(labels, predictions)
+    
     return metric
 
 
@@ -238,12 +247,12 @@ def genetic_algorithm(X,num_generations, sol_per_pop, porc_mutation, porc_genes,
     print("Mejor solucion : ", best_solution)
     print("Indices seleccionados : ", best_solution_indices)
     print("Numero de variables seleccionadas : ", best_solution_num_elements)
-    print("ROC-AUC de la mejor solucion de todo el algoritmo : ", best_solution_fitness)
+    print("PR-AUC de la mejor solucion de todo el algoritmo : ", best_solution_fitness)
 
     matplotlib.pyplot.figure()
     matplotlib.pyplot.plot(best_outputs)
     matplotlib.pyplot.xlabel("Generacion")
-    matplotlib.pyplot.ylabel("Mejor ROC-AUC")
+    matplotlib.pyplot.ylabel("Mejor PR-AUC")
     matplotlib.pyplot.show()
     
     return best_solution, best_solution_indices, best_solution_num_elements, best_solution_fitness
