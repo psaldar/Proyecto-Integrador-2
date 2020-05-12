@@ -26,19 +26,18 @@ random.seed(42)
 
 
 ### Lee datos de train (para hallar barrios con mas accidentes en train)
-data_train_u = pd.read_csv('../../data/train.csv') 
-data_val = pd.read_csv('../../data/validation.csv') 
+data_train_u = pd.read_csv('data/train_z.csv') 
+data_val = pd.read_csv('data/validation_z.csv') 
 data_train = pd.concat([data_train_u, data_val])
 
 
 ### Lee datos de test
-data_test_completa = pd.read_csv('../../data/test.csv')
+data_test_completa = pd.read_csv('data/test_z.csv')
 data_test = data_test_completa.drop(['BARRIO', 'Accidente', 'TW'], axis=1)
 
 
 
 ### Modelo usado
-os.chdir('../..')
 sys.path.insert(0, os.getcwd())
 import scripts.funciones as funciones
 version = 'verFinal'    
