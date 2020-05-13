@@ -38,13 +38,13 @@ logging.basicConfig(level=logging.DEBUG,
 def main(d_ini, d_fin):
     
     ### Decide si guarda o no las predicciones de test
-    save = False
+    save = True
     
     ### Realizamos la carga del modelo entrenado con el script training.py,
     ### importamos tanto el mejor modelo como el objeto de clase modelo 
     ### utilizado durante el entrenamiento
-    version = 'PruebaPabs'    
-    mod_version = funciones.carga_model(base_path, f'models/{version}', version)
+    version = 'verFinal'    
+    mod_version = funciones.carga_model(base_path, f'models/{version}', version+'_voting')
     
     if 'model' in mod_version:
         logger.info("Model loaded")

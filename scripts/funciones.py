@@ -358,8 +358,8 @@ def grid(base_path, now_date, path_file, os_X_tt, os_Y_tt,X_test,Y_test, models,
        ### Escribe en el archivo de log las metricas obtenidas en el conjunto
        ### de validacion
        logger.info(f"El tiempo de seleccion fue: {selection_time:0.3f} s")
-       logger.info(f"El {score} de la familia {name} es: {prec_rec_auc:0.3f}")
-       logger.info(f"El precision-recall AUC de la familia {name} es: {models[name]['mae']:0.3f}")
+       logger.info(f"El {score} de la familia {name} es: {models[name]['mae']:0.3f}")
+       logger.info(f"El precision-recall AUC de la familia {name} es: {prec_rec_auc:0.3f}")
        logger.info(f"El b_accuracy de la familia {name} es: {bAccuracy:0.3f}")
        logger.info(f"El fscore de la familia {name} es: {fScore:0.3f}")
        logger.info(f"La precision de la familia {name} es: {precision:0.3f}")
@@ -496,10 +496,10 @@ def precision_recall_graph(base_path, selected, ev_data, save = False):
     
     precision, recall, _ = metrics.precision_recall_curve(pl_data['Accidente'], pl_data['Predicted'])
     
-    fscore = metrics.f1_score(pl_data['Accidente'], (pl_data['Predicted'] >= 0.5).astype(int) )
+    auc = metrics.auc(recall, precision)
     
     random = pl_data['Accidente'].sum()/len(pl_data['Accidente'])
-    ax[1].plot(recall, precision, color='red', label=f'F1score %0.5f' % fscore)    
+    ax[1].plot(recall, precision, color='red', label=f'AUC %0.5f' % auc)    
     ax[1].plot([0, 1], [random, random], color='navy', linestyle='--')
     ax[1].legend(loc="upper right")
     
@@ -543,10 +543,10 @@ def precision_recall_graph_test(base_path, ev_data, save = False):
     
     precision, recall, _ = metrics.precision_recall_curve(pl_data['Accidente'], pl_data['Predicted'])
     
-    fscore = metrics.f1_score(pl_data['Accidente'], (pl_data['Predicted'] >= 0.5).astype(int) )
+    auc = metrics.auc(recall, precision)
     
     random = pl_data['Accidente'].sum()/len(pl_data['Accidente'])
-    ax[1].plot(recall, precision, color='red', label=f'F1score %0.5f' % fscore)    
+    ax[1].plot(recall, precision, color='red', label=f'AUC %0.5f' % auc)    
     ax[1].plot([0, 1], [random, random], color='navy', linestyle='--')
     ax[1].legend(loc="upper right")
     
