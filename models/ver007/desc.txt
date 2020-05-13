@@ -1,4 +1,0 @@
-DESCRIPCION:
-Entrena modelo considerando el diccionario de modelos completo,
-ademas incluye todas las variables relacionadas al dia de la semana,
-hora y todas las variables climaticas con su mean

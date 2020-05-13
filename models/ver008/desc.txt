@@ -1,6 +1,0 @@
-DESCRIPCION:
-Entrena modelo considerando el diccionario de modelos completo,
-ademas incluye todas las variables relacionadas al dia de la semana,
-hora y todas las variables climaticas con su mean. Incluye dos variables
-adicionales relacionada al acumulado de falla en las ultimas 8 horas y 7 dias
-y la informacion de los barrios

@@ -1,4 +1,0 @@
-DESCRIPCION:
-Entrena modelo considerando diccionario completo de modelos,
-ademas incluye todas las variables relacionadas al dia de la semana,
-hora y los barrios relevantes del poblado

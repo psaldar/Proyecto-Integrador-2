@@ -1,9 +1,0 @@
-2020-03-30 22:36:17,984 -  ********************************************************************************
-2020-03-30 22:36:17,984 -  Model: logistic
-2020-03-30 22:36:20,214 -  Saving model at C:\Users\pasal\Google Drive\EAFIT\Ciencia de Datos y Analitica\02 Segundo Semestre\Proyecto Integrador\Proyecto-Integrador-2/models/ver005\logistic_20200330_2236.sav
-2020-03-30 22:36:20,216 -  El tiempo de seleccion fue: 2.230 s
-2020-03-30 22:36:20,216 -  El roc_auc de la familia logistic es: 0.754
-2020-03-30 22:36:20,216 -  El b_accuracy de la familia logistic es: 0.681
-2020-03-30 22:36:20,216 -  El fscore de la familia logistic es: 0.611
-2020-03-30 22:36:20,217 -  ********************************************************************************
-2020-03-30 22:36:20,217 -  best roc_auc was: logistic with an error of: 0.7539951982784704

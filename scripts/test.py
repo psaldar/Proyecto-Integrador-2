@@ -37,10 +37,13 @@ logging.basicConfig(level=logging.DEBUG,
 #%%
 def main(d_ini, d_fin):
     
+    ### Decide si guarda o no las predicciones de test
+    save = False
+    
     ### Realizamos la carga del modelo entrenado con el script training.py,
     ### importamos tanto el mejor modelo como el objeto de clase modelo 
     ### utilizado durante el entrenamiento
-    version = 'ver012NNPabs'    
+    version = 'PruebaPabs'    
     mod_version = funciones.carga_model(base_path, f'models/{version}', version)
     
     if 'model' in mod_version:
@@ -69,13 +72,13 @@ def main(d_ini, d_fin):
         freq2 = mod.freq2
     except Exception as e:
         logger.info(f'Problemas con las frecuencias de las senales {e}')
-        freq1 = ['1D', '3D', '7D', '14D', '30D', '60D']
+        senales = ['1D', '3D', '7D', '14D', '30D', '60D']
         freq2 = '60D'
     
     ### agregamos la informacion relacionada a la cantidad de accidentes ocurridas
     ### en las ultimas X horas
     ### Agregar senales
-    d_ini_acc = d_ini - dt.timedelta(days = int(freq6.replace('D', '')))  ### freq mayor
+    d_ini_acc = d_ini - dt.timedelta(days = int(freq2.replace('D', '')))  ### freq mayor
     raw_accidentes = funciones.read_accidentes(d_ini_acc, d_fin)
     for fresen in senales:
         data_org = funciones.obtener_accidentes_acumulados(data_org, 
@@ -98,18 +101,18 @@ def main(d_ini, d_fin):
     ### El modelo realiza la prediccion con el conjunto de datos, para esto los
     ### parametros de la funcion son el conjunto de datos, y el modelo que 
     ### se quiere utilizar
-    preds_ff = mod.predict(X, model_sel, save = True)
+    preds_ff = mod.predict(X, model_sel, save = save)
     preds_ff['Accidente'] = Y
 
 
     ### Guardo congunto de test
-    
-    X_test_save = pd.read_csv('data/test.csv')
-    X_test_save['Accidente'] = Y
-    X_test_save['BARRIO'] = data_org['BARRIO'].values
-    X_test_save['TW'] = data_org['TW'].values
-    
-    X_test_save.to_csv('data/test.csv', index = False, sep = ',')
+    if save:
+        X_test_save = pd.read_csv('data/test.csv')
+        X_test_save['Accidente'] = Y
+        X_test_save['BARRIO'] = data_org['BARRIO'].values
+        X_test_save['TW'] = data_org['TW'].values
+        
+        X_test_save.to_csv('data/test.csv', index = False, sep = ',')
     
     ### Realizamos las gracias de violines, roc y precision-recall en el conjunto
     ### de datos de prueba

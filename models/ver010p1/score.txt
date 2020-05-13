@@ -1,8 +1,0 @@
-2020-04-05 23:15:08,601 - ********************************************************************************
-2020-04-05 23:15:08,601 - Model: xgboost
-2020-04-05 23:15:12,283 - Saving model at C:\Users\pasal\Google Drive\EAFIT\Ciencia de Datos y Analitica\02 Segundo Semestre\Proyecto Integrador\Proyecto-Integrador-2/models/ver010p1\xgboost_20200405_2315.sav
-2020-04-05 23:15:12,289 - El tiempo de seleccion fue: 3.682 s
-2020-04-05 23:15:12,289 - El roc_auc de la familia xgboost es: 0.752
-2020-04-05 23:15:12,289 - El b_accuracy de la familia xgboost es: 0.675
-2020-04-05 23:15:12,289 - El fscore de la familia xgboost es: 0.596
-2020-04-05 23:15:12,289 - ********************************************************************************

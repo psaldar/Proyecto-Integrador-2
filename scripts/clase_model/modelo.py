@@ -62,7 +62,7 @@ class Modelo:
     # Esta funcion se encarga de entrenar los modelos en el diccionario de
     # modelos, ademas de elegir el mejor modelo para ser utilizado
     def train(self,X,Y,score = 'roc_auc',cv = 2,n_proc = 1,desc_model_sav = '',
-              prop_deseada_under = 0.2,balance = 'rus',barrios= [],tws = [],**kwargs):
+              prop_deseada_under = 0.2,balance = 'rus',barrios= [],tws = [],save = False,**kwargs):
         
         X['BARRIO'] = barrios
         X['TW'] = tws
@@ -118,14 +118,16 @@ class Modelo:
         
         ### Guardar data de entrenamiento y validacion
         
+        
         X_train_save = os_X_tt.reset_index(drop = True)
         X_train_save['Accidente'] = os_Y_tt.values
 
         X_val_save = X_test.reset_index(drop = True)
         X_val_save['Accidente'] = Y_test.values
         
-        X_train_save.to_csv('data/train.csv', index = False, sep = ',')
-        X_val_save.to_csv('data/validation.csv', index = False, sep = ',')
+        if save:
+            X_train_save.to_csv('data/train.csv', index = False, sep = ',')
+            X_val_save.to_csv('data/validation.csv', index = False, sep = ',')
         
         
         os_X_tt = os_X_tt.drop(columns = ['BARRIO','TW'])

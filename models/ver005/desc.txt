@@ -1,4 +1,0 @@
-DESCRIPCION:
-Entrena modelo considerando solo regresion logistica
-ademas incluye todas las variables climaticas, y las variables
-relevantes encontradas en las tareas de ML

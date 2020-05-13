@@ -235,14 +235,27 @@ def main(d_ini, d_fin):
     ### Estamos conservando unicamente las variables relevantes para asi
     ### terminar el procesamiento de las variables antes de pasar a la etapa
     ### de entrenamiento
+    try:
+        file_name = 'analisis_var_relevantes.json'
+        path = os.path.join(base_path, f'models/verFinal/{file_name}')
+        with open(path, 'r') as f:
+            info_vars = json.load(f)
+    
+        vars_ele = info_vars['forward']['features']
+        
+        ### Revisa si hay variables faltantes en el dataframe
+        aux = pd.DataFrame(vars_ele, columns = ['field'])
+        idx = ~aux['field'].isin(X.columns)
+        missing_cols = aux[idx]['field'].values
+        
+        ### En caso de tener variables faltantes, se crean
+        for col_name in missing_cols:
+            logger.info(f"Falta variable: {col_name}, se agrega y se llena con 0s")
+            X[col_name] = 0
 
-    file_name = 'analisis_var_relevantes.json'
-    path = os.path.join(base_path, f'models/verFinal/{file_name}')
-    with open(path, 'r') as f:
-        info_vars = json.load(f)
-
-    vars_ele = info_vars['forward']['features']
-    X = X[vars_ele]        
+        X = X[vars_ele]        
+    except Exception as e:
+        logger.info(f'Error leyendo las variables relevantes: {e}')
 
     
     ### el objeto de clase modelo, tiene la funcion que realiza el entrenamiento
@@ -257,7 +270,8 @@ def main(d_ini, d_fin):
                                                  balance = balance,
                                                  prop_deseada_under = prop_deseada_under,
                                                  barrios = data_org['BARRIO'].values,
-                                                 tws = data_org['TW'].values)
+                                                 tws = data_org['TW'].values,
+                                                 save = False)
        
  
     #Realiza la prediccion de las fallas en un conjunto de datos de prueba
@@ -295,5 +309,5 @@ if __name__ == '__main__':
     ### Se ejecuta el la funcion main pasando como parametros el rango de fechas
     ### en el que se considerara la informacion del entrenamiento
     d_ini = dt.datetime(2017,6,1)
-    d_fin = dt.datetime(2017,6,15)    
+    d_fin = dt.datetime(2019,8,1)    
     main(d_ini, d_fin)
