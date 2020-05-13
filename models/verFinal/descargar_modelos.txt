@@ -1,0 +1,10 @@
+Para ejecutar los codigos donde se cargan modelos, agregar a la carpeta models/verFinal los
+archivos que se encuentran en los siguientes links de google drive (modelos entrenados)
+
+Descargar modelos:
+logistic: https://drive.google.com/open?id=1cuXmEkjouBzhUkcnC3AlitHqfSG1bYx-
+xtree: https://drive.google.com/open?id=1UZ9Su6qSjIp8ArQIsR7FwJnluW5945Kw
+nn: https://drive.google.com/open?id=1dqDnMldbIsO6cPzPQRgGO5ydn1nVZEFY
+voting: https://drive.google.com/open?id=1gM819CMES51mPqrlhUpr_bfIj-GvxT9z
+voting + objeto: https://drive.google.com/open?id=1kUFGx2XStkSaBVFVnSAdxvHkexJfX5pp
+mejor modelo train + objeto : https://drive.google.com/open?id=1Ne1cN_Lh5P4yv40wpYl2IwIujjvvTZ-L
