@@ -36,5 +36,8 @@ data/info_poblado_all.csv
 data/train.csv
 data/validation.csv
 data/test.csv
+data/train_z.csv
+data/validation_z.csv
+data/test_z.csv
 
 scripts/iRain/f1/*
