@@ -1,0 +1,68 @@
+2020-05-13 08:27:36,366 - 11940 - scripts.clase_model.modelo - INFO - Data: (train after under) Datos 0 son 12950.0 y Datos 1 son 5550.0
+2020-05-13 08:27:38,846  - ********************************************************************************
+2020-05-13 08:27:38,846  - Model: rforest
+2020-05-13 09:08:05,188  - Saving model at C:\Users\pasal\Google Drive\EAFIT\Ciencia de Datos y Analitica\02 Segundo Semestre\Proyecto Integrador\Proyecto-Integrador-2/models/verFinal\rforest_20200513_0827.sav
+2020-05-13 09:08:05,390  - El tiempo de seleccion fue: 2426.342 s
+2020-05-13 09:08:05,390  - El roc_auc de la familia rforest es: 0.773
+2020-05-13 09:08:05,390  - El precision-recall AUC de la familia rforest es: 0.059
+2020-05-13 09:08:05,390  - El b_accuracy de la familia rforest es: 0.630
+2020-05-13 09:08:05,390  - El fscore de la familia rforest es: 0.120
+2020-05-13 09:08:05,390  - La precision de la familia rforest es: 0.073
+2020-05-13 09:08:05,390  - El recall de la familia rforest es: 0.341
+2020-05-13 09:08:05,391  - ********************************************************************************
+2020-05-13 09:08:05,391  - ********************************************************************************
+2020-05-13 09:08:05,391  - Model: xtree
+2020-05-13 09:34:23,371  - Saving model at C:\Users\pasal\Google Drive\EAFIT\Ciencia de Datos y Analitica\02 Segundo Semestre\Proyecto Integrador\Proyecto-Integrador-2/models/verFinal\xtree_20200513_0827.sav
+2020-05-13 09:34:23,621  - El tiempo de seleccion fue: 1577.980 s
+2020-05-13 09:34:23,621  - El roc_auc de la familia xtree es: 0.780
+2020-05-13 09:34:23,621  - El precision-recall AUC de la familia xtree es: 0.060
+2020-05-13 09:34:23,621  - El b_accuracy de la familia xtree es: 0.619
+2020-05-13 09:34:23,621  - El fscore de la familia xtree es: 0.118
+2020-05-13 09:34:23,621  - La precision de la familia xtree es: 0.073
+2020-05-13 09:34:23,622  - El recall de la familia xtree es: 0.313
+2020-05-13 09:34:23,622  - ********************************************************************************
+2020-05-13 09:34:23,622  - ********************************************************************************
+2020-05-13 09:34:23,622  - Model: gradient
+2020-05-13 11:06:56,336  - Saving model at C:\Users\pasal\Google Drive\EAFIT\Ciencia de Datos y Analitica\02 Segundo Semestre\Proyecto Integrador\Proyecto-Integrador-2/models/verFinal\gradient_20200513_0827.sav
+2020-05-13 11:06:56,345  - El tiempo de seleccion fue: 5552.714 s
+2020-05-13 11:06:56,345  - El roc_auc de la familia gradient es: 0.779
+2020-05-13 11:06:56,345  - El precision-recall AUC de la familia gradient es: 0.060
+2020-05-13 11:06:56,345  - El b_accuracy de la familia gradient es: 0.656
+2020-05-13 11:06:56,345  - El fscore de la familia gradient es: 0.115
+2020-05-13 11:06:56,345  - La precision de la familia gradient es: 0.067
+2020-05-13 11:06:56,345  - El recall de la familia gradient es: 0.422
+2020-05-13 11:06:56,345  - ********************************************************************************
+2020-05-13 11:06:56,345  - ********************************************************************************
+2020-05-13 11:06:56,345  - Model: xgboost
+2020-05-13 13:28:22,528  - Saving model at C:\Users\pasal\Google Drive\EAFIT\Ciencia de Datos y Analitica\02 Segundo Semestre\Proyecto Integrador\Proyecto-Integrador-2/models/verFinal\xgboost_20200513_0827.sav
+2020-05-13 13:28:22,535  - El tiempo de seleccion fue: 8486.182 s
+2020-05-13 13:28:22,535  - El roc_auc de la familia xgboost es: 0.776
+2020-05-13 13:28:22,535  - El precision-recall AUC de la familia xgboost es: 0.060
+2020-05-13 13:28:22,535  - El b_accuracy de la familia xgboost es: 0.660
+2020-05-13 13:28:22,535  - El fscore de la familia xgboost es: 0.112
+2020-05-13 13:28:22,535  - La precision de la familia xgboost es: 0.064
+2020-05-13 13:28:22,535  - El recall de la familia xgboost es: 0.439
+2020-05-13 13:28:22,535  - ********************************************************************************
+2020-05-13 13:28:22,535  - ********************************************************************************
+2020-05-13 13:28:22,535  - Model: logistic
+2020-05-13 13:33:06,195  - Saving model at C:\Users\pasal\Google Drive\EAFIT\Ciencia de Datos y Analitica\02 Segundo Semestre\Proyecto Integrador\Proyecto-Integrador-2/models/verFinal\logistic_20200513_0827.sav
+2020-05-13 13:33:06,203  - El tiempo de seleccion fue: 283.660 s
+2020-05-13 13:33:06,204  - El roc_auc de la familia logistic es: 0.783
+2020-05-13 13:33:06,204  - El precision-recall AUC de la familia logistic es: 0.060
+2020-05-13 13:33:06,204  - El b_accuracy de la familia logistic es: 0.666
+2020-05-13 13:33:06,204  - El fscore de la familia logistic es: 0.115
+2020-05-13 13:33:06,204  - La precision de la familia logistic es: 0.066
+2020-05-13 13:33:06,204  - El recall de la familia logistic es: 0.451
+2020-05-13 13:33:06,204  - ********************************************************************************
+2020-05-13 13:33:06,204  - ********************************************************************************
+2020-05-13 13:33:06,204  - Model: nn
+2020-05-13 15:09:16,734  - Saving model at C:\Users\pasal\Google Drive\EAFIT\Ciencia de Datos y Analitica\02 Segundo Semestre\Proyecto Integrador\Proyecto-Integrador-2/models/verFinal\nn_20200513_0827.sav
+2020-05-13 15:09:16,745  - El tiempo de seleccion fue: 5770.529 s
+2020-05-13 15:09:16,746  - El roc_auc de la familia nn es: 0.783
+2020-05-13 15:09:16,746  - El precision-recall AUC de la familia nn es: 0.060
+2020-05-13 15:09:16,746  - El b_accuracy de la familia nn es: 0.671
+2020-05-13 15:09:16,746  - El fscore de la familia nn es: 0.112
+2020-05-13 15:09:16,746  - La precision de la familia nn es: 0.063
+2020-05-13 15:09:16,746  - El recall de la familia nn es: 0.473
+2020-05-13 15:09:16,746  - ********************************************************************************
+2020-05-13 15:09:16,746  - best roc_auc was: logistic with an error of: 0.7831905761827952
