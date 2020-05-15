@@ -85,7 +85,7 @@ data_test_full = data_test_full[['TW','Accidente', 'predic_modelo','BARRIO']]
 
 #### Numero de turnos totales diarios que se cubren
 ### Se asume que cada agente cubre x turnos diarios
-num_agentes = 6
+num_agentes = 8
 turnos_diarios_agente = 4
 agentes = num_agentes * turnos_diarios_agente
 

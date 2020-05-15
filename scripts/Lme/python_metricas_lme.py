@@ -4,13 +4,12 @@ import pandas as pd
 
 
 ### Leer datos de validation
-li = pd.read_csv("validation_predict_lme.csv", sep=';')
-
+li = pd.read_csv("predicciones_val_r.txt", sep=';')
 
 
 ### Consolidar prediccion con probabilidades
 li_clase = []
-for i in li['Prediccion_R']:
+for i in li['predictio_v']:
     if i>0.5:
         li_clase.append(1)
     else:
