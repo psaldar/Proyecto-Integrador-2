@@ -6,7 +6,7 @@ Created on Sun Mar  1 18:23:23 2020
 """
 
 import os
-### Realizamos el cambio de directoroi de trabajo al "Directorio Base"
+### Realizamos el cambio de directorio de trabajo al "Directorio Base"
 current_dir = os.getcwd()
 base_path = os.path.dirname(current_dir)
 base_path = os.path.dirname(base_path)
@@ -85,7 +85,7 @@ data_test_full = data_test_full[['TW','Accidente', 'predic_modelo','BARRIO']]
 
 #### Numero de turnos totales diarios que se cubren
 ### Se asume que cada agente cubre x turnos diarios
-num_agentes = 6
+num_agentes = 8
 turnos_diarios_agente = 4
 agentes = num_agentes * turnos_diarios_agente
 
