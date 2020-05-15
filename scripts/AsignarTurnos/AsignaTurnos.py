@@ -6,7 +6,7 @@ Created on Sun Mar  1 18:23:23 2020
 """
 
 import os
-### Realizamos el cambio de directoroi de trabajo al "Directorio Base"
+### Realizamos el cambio de directorio de trabajo al "Directorio Base"
 current_dir = os.getcwd()
 base_path = os.path.dirname(current_dir)
 base_path = os.path.dirname(base_path)
