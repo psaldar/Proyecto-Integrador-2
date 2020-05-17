@@ -103,6 +103,24 @@ Ya definido tanto la estrategia de resampling a utilzar como las variables relev
 
 - Para tener en cuenta: el script de training.py al realizar el entrenamiento, crea 2 archivos csv, data/train.csv y data/validation.csv, luego el archivo de test.py al realizar las predicciones crea el archivo data/test.csv, estos archivos son la entrada para el script scripts/auxiliares/Estandarizacion_datos.py, el cual crea los archivos data/train_z.py, data/validation_z.py y data/test_z.py los cuales son usados para el modelo de efectos mixtos.
 
+Como los archivos generados son pesados, no se encuentran dentro del repositorio, pero pueden ser descargado utilizando los siguientes links (corresponden al Google Drive de uno de los autores)
+
+- train.csv: https://drive.google.com/open?id=1SRll7AINmiJPAH0q0bsmImwxBOz06aBA
+- validation.csv: https://drive.google.com/open?id=1QlSk61MghHjMsZg1ERlBdY2iANBKBjrX
+- test.csv: https://drive.google.com/open?id=1-mcs6gvWICxYRWXF1G5XzS1eezPHz3LZ
+
+- train_z.csv: https://drive.google.com/open?id=19OM8h5eZUlT3zzyjtusHEHYmUNsbmeSz
+- validation_z.csv: https://drive.google.com/open?id=1sc5aMiAh0Yk9pzizDhkxVNcmxt1UBJGB
+- test_z.csv: https://drive.google.com/open?id=1j4wPaNlQDvBBrgQgy6U8hgdQKWrFA4sv
+
+Ademas de estos archivos de texto, los modelos guardados en .sav que se utilizan se pueden descargar del siguiente link:
+
+- Modelos guardados en archivos .sav: https://drive.google.com/open?id=1sXLnTMLlXXrWUVWxj9-rzD1Vj4iNiHfk
+
+### Nota: 
+
+En el trabajo final luego de realizar las pruebas y ejecutar el flujo tal como fue descrito, encontramos que nuetsro mejor modelo para el problema que estamos estudiando fue el clasificador ensamblado (Voting Classifier) y por eso usamos ese en los scripts scripts/test.py y scripts/asigna turnos.py. Sin embargo, se podria usar cualquier otro modelo.sav que resulta de scripts/training.py para realizar la prueba del modelo y la asignación de turnos.
+
 ## Caso de aplicación
 
 NICOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
