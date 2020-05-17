@@ -30,7 +30,7 @@ darksky_api = darksky(api_key)
 #%%
 
 ### Realiza la conexion al sqlite donde se guarda la informacion climatica
-file_name = 'data/info_clima2018.sqlite3'
+file_name = 'data/database_pi2.sqlite3'
 conn = sqlite3.connect(file_name)
 
 ### Esto se realiza en caso que ya exista informacion consultada en la BD

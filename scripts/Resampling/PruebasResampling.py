@@ -20,6 +20,10 @@ from sklearn.metrics import balanced_accuracy_score
 from sklearn.metrics import f1_score 
 from sklearn.metrics import roc_auc_score
 
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.neural_network import MLPClassifier
 ## Evitar warnings de convergencia
 import warnings
 warnings.filterwarnings("ignore")
@@ -46,14 +50,27 @@ logging.basicConfig(level=logging.DEBUG,
                     handlers = [handler])
 #%%
 import scripts.funciones as funciones
-# version = 'verFinal'    
-# mod_version = funciones.carga_model('.', f'models/{version}', version)
-# mod = mod_version['model'].steps[0][1]
-
-# classifier = mod_version['model'].steps[1][1]
+### Carga Red Neuronal
+# classifier = Pipeline([
+#                         ('scaler', StandardScaler()), 
+#                         ('nn', MLPClassifier(hidden_layer_sizes = (30,57),
+#                                 learning_rate_init = 0.001 ,
+#                                 alpha = 3 ,
+#                                 solver = 'adam',
+#                                 shuffle = True, 
+#                                 activation = 'relu',
+#                                 random_state= 42)
+#                              )
+#                         ])
 
 ### Carga random forest
-classifier  = funciones.carga_model_ind('.', f'models/ver012', 'rforest_20200505_1249')
+classifier = Pipeline([
+                        ('scaler', StandardScaler()), 
+                        ('rforest', RandomForestClassifier(bootstrap=False,criterion='entropy',
+                                                           max_depth=10,n_estimators=500,warm_start=False,
+                                                           random_state= 42)
+                             )
+                        ])
 #%%
 ########## LECTURA DE DATOS ############
 d_ini = dt.datetime(2017,6,1)

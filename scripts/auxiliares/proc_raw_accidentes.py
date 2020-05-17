@@ -112,8 +112,6 @@ cols_datos = ['Lon', 'Lat', 'OBJECTID', 'RADICADO', 'HORA', 'Dia_sem', 'PERIODO'
 
 datos = datos[cols_datos]
 #%%
-### Esto solo se corre si se tiene recopilada la informacion de las variables
-### climaticas
 db_name = 'database_pi2.sqlite3'
 conn = sqlite3.connect(f'data/{db_name}')
 
