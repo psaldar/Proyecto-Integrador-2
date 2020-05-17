@@ -101,6 +101,8 @@ Ya definido tanto la estrategia de resampling a utilzar como las variables relev
 
 - Finalmente realizaremos la predicción de accidentalidad en base a un modelo entrenado y un objeto de clases Modelo. Por lo tanto, acá consideramos el archivo scripts/test.py este archivo lee un archivo .sav que contenga (1)Un objeto de clase Modelo y (2)Un modelo entrenado, carga la información en una ventana de tiempo (periodo de prueba), y luego con el objeto de clase Modelo, realiza la predicción (recordar que el la función predict del objeto filtra las variables seleccionadas, las pone en el orden requerido y realiza la predicción). Una vez se tenga la predicción, el script creará en PDFs las matrices de confusión para diferentes umbrales, al igual que los diagramas de violín y las curvas ROC y Precisipon-Recall que permitirán ver el desempeño del modelo en el conjunto de entrenamiento.
 
+- Para tener en cuenta: el script de training.py al realizar el entrenamiento, crea 2 archivos csv, data/train.csv y data/validation.csv, luego el archivo de test.py al realizar las predicciones crea el archivo data/test.csv, estos archivos son la entrada para el script scripts/auxiliares/Estandarizacion_datos.py, el cual crea los archivos data/train_z.py, data/validation_z.py y data/test_z.py los cuales son usados para el modelo de efectos mixtos.
+
 ## Caso de aplicación
 
 NICOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
