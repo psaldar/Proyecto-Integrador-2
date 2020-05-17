@@ -10,6 +10,8 @@ notebooks/.ipynb_checkpoints/*
 /__pycache__/*
 *.py[cod]
 
+data/models/*
+
 # logs
 logs/*
 *.log
