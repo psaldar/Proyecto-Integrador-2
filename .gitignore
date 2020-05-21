@@ -12,6 +12,8 @@ notebooks/.ipynb_checkpoints/*
 
 data/models/*
 
+scripts/Lme/.Rhistory
+
 # logs
 logs/*
 *.log
