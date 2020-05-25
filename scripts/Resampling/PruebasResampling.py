@@ -51,26 +51,26 @@ logging.basicConfig(level=logging.DEBUG,
 #%%
 import scripts.funciones as funciones
 ### Carga Red Neuronal
-# classifier = Pipeline([
-#                         ('scaler', StandardScaler()), 
-#                         ('nn', MLPClassifier(hidden_layer_sizes = (30,57),
-#                                 learning_rate_init = 0.001 ,
-#                                 alpha = 3 ,
-#                                 solver = 'adam',
-#                                 shuffle = True, 
-#                                 activation = 'relu',
-#                                 random_state= 42)
-#                              )
-#                         ])
-
-### Carga random forest
 classifier = Pipeline([
                         ('scaler', StandardScaler()), 
-                        ('rforest', RandomForestClassifier(bootstrap=False,criterion='entropy',
-                                                           max_depth=10,n_estimators=500,warm_start=False,
-                                                           random_state= 42)
-                             )
+                        ('nn', MLPClassifier(hidden_layer_sizes = (30,57),
+                                learning_rate_init = 0.001 ,
+                                alpha = 3 ,
+                                solver = 'adam',
+                                shuffle = True, 
+                                activation = 'relu',
+                                random_state= 42)
+                              )
                         ])
+
+### Carga random forest
+# classifier = Pipeline([
+#                         ('scaler', StandardScaler()), 
+#                         ('rforest', RandomForestClassifier(bootstrap=False,criterion='entropy',
+#                                                            max_depth=10,n_estimators=500,warm_start=False,
+#                                                            random_state= 42)
+#                              )
+#                         ])
 #%%
 ########## LECTURA DE DATOS ############
 d_ini = dt.datetime(2017,6,1)
